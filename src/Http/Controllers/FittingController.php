@@ -2,25 +2,27 @@
 
 namespace Denngarr\Seat\Fitting\Http\Controllers;
 
-use Denngarr\Seat\Fitting\Helpers\CalculateConstants;
-use Denngarr\Seat\Fitting\Helpers\CalculateEft;
-use Denngarr\Seat\Fitting\Models\Doctrine;
-use Denngarr\Seat\Fitting\Models\Fitting;
-use Denngarr\Seat\Fitting\Validation\DoctrineValidation;
-use Denngarr\Seat\Fitting\Validation\FittingValidation;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Seat\Eveapi\Models\Alliances\Alliance;
-use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Corporation\CorporationInfo;
-use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
-use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Exceptions\SettingException;
 use Seat\Web\Http\Controllers\Controller;
 use Seat\Web\Models\Acl\Role;
+use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use Seat\Eveapi\Models\Alliances\Alliance;
+use Seat\Eveapi\Models\Alliances\AllianceMember;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Eveapi\Models\Character\CharacterSkill;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
+use Denngarr\Seat\Fitting\Helpers\CalculateConstants;
+use Denngarr\Seat\Fitting\Helpers\CalculateEft;
+use Denngarr\Seat\Fitting\Models\Fitting;
+use Denngarr\Seat\Fitting\Models\Doctrine;
+use Denngarr\Seat\Fitting\Validation\FittingValidation;
+use Denngarr\Seat\Fitting\Validation\DoctrineValidation;
 
 class FittingController extends Controller implements CalculateConstants
 {
@@ -28,20 +30,18 @@ class FittingController extends Controller implements CalculateConstants
 
     private $requiredSkills = [];
 
-    public function getSettings()
-    {
+    public function getSettings(){
         return view("fitting::settings");
     }
 
-    public function saveSettings(Request $request)
-    {
+    public function saveSettings(Request $request){
         $request->validate([
             "evepraisal" => "required|string"
         ]);
 
         setting(["fitting.evepraisal.domain", $request->evepraisal], true);
 
-        return redirect()->back()->with("success", "Updated settings");
+        return redirect()->back()->with("success","Updated settings");
     }
 
     public function getDoctrineEdit($doctrine_id): array
@@ -155,7 +155,7 @@ class FittingController extends Controller implements CalculateConstants
 
             $index = $character->character_id;
 
-            $skillsToons['characters'][$index]['id'] = $character->character_id;
+            $skillsToons['characters'][$index]['id']   = $character->character_id;
             $skillsToons['characters'][$index]['name'] = $character->name;
 
             foreach ($character->skills as $skill) {
@@ -163,7 +163,7 @@ class FittingController extends Controller implements CalculateConstants
                 $rank = DgmTypeAttribute::where('typeID', $skill->skill_id)->where('attributeID', '275')->first();
 
                 $skillsToons['characters'][$index]['skill'][$skill->skill_id]['level'] = $skill->trained_skill_level;
-                $skillsToons['characters'][$index]['skill'][$skill->skill_id]['rank'] = $rank->valueFloat;
+                $skillsToons['characters'][$index]['skill'][$skill->skill_id]['rank']  = $rank->valueFloat;
             }
 
             // Fill in missing skills so Javascript doesn't barf and you have the correct rank
@@ -235,13 +235,14 @@ class FittingController extends Controller implements CalculateConstants
         $evepraisal = setting("fitting.evepraisal.domain", true);
 
         $response = (new Client())
-            ->request('POST', "https://$evepraisal/appraisal/structured.json", [
+            ->request('POST', "https://$evepraisal/appraisal?market=jita&persist=no", [
                 'multipart' => [
                     [
-                        'market_name' => 'jita',
-                        'items' => $fit->eftfitting,
+                        'name' => 'uploadappraisal',
+                        'contents' => $fit->eftfitting,
+                        'filename' => 'notme',
                         'headers' => [
-                            'Content-Type' => 'application/json',
+                            'Content-Type' => 'text/plain',
                             'User-Agent' => 'seat-srp'
                         ]
                     ],
@@ -258,8 +259,8 @@ class FittingController extends Controller implements CalculateConstants
         $response = $this->fittingParser($fitting->eftfitting);
 
         $response["exportLinks"] = collect(config("fitting.exportlinks"))->map(fn($link): array => [
-            "name" => $link["name"],
-            "url" => isset($link["url"]) ? $link["url"] . "?id=$fitting->id" : route($link["route"], ["id" => $fitting->id])
+            "name"=>$link["name"],
+            "url"=>isset($link["url"]) ? $link["url"]."?id=$fitting->id" : route($link["route"],["id"=>$fitting->id])
         ])->values();
 
         return response()->json($response);
@@ -304,7 +305,7 @@ class FittingController extends Controller implements CalculateConstants
             $fitting = Fitting::find($request->fitSelection);
         }
 
-        $eft = explode("\n", (string)$request->eftfitting);
+        $eft = explode("\n", (string) $request->eftfitting);
         [$fitting->shiptype, $fitting->fitname] = explode(", ", substr($eft[0], 1, -2));
         $fitting->eftfitting = $request->eftfitting;
         $fitting->save();
@@ -325,7 +326,7 @@ class FittingController extends Controller implements CalculateConstants
     private function fittingParser($eft)
     {
         $jsfit = [];
-        $data = preg_split("/\r?\n\r?\n/", (string)$eft);
+        $data = preg_split("/\r?\n\r?\n/", (string) $eft);
         $jsfit['eft'] = $eft;
 
         $header = preg_split("/\r?\n/", $data[0]);
@@ -384,7 +385,7 @@ class FittingController extends Controller implements CalculateConstants
 
                 $jsfit['dronebay'][$item->typeID] = [
                     'name' => $drone,
-                    'qty' => $qty,
+                    'qty'  => $qty,
                 ];
             }
         }
@@ -396,7 +397,7 @@ class FittingController extends Controller implements CalculateConstants
         $index = 0;
 
         foreach ($slots as $slot) {
-            $module = explode(",", (string)$slot);
+            $module = explode(",", (string) $slot);
 
             if (!preg_match("/\[Empty .+ slot\]/", $module[0])) {
                 $item = InvType::where('typeName', $module[0])->first();
@@ -406,7 +407,7 @@ class FittingController extends Controller implements CalculateConstants
                 }
 
                 $jsfit[$slotname . $index] = [
-                    'id' => $item->typeID,
+                    'id'   => $item->typeID,
                     'name' => $module[0],
                 ];
 
@@ -429,7 +430,7 @@ class FittingController extends Controller implements CalculateConstants
             $index = $character->characterID;
 
             $skillsToons['characters'][$index] = [
-                'id' => $character->characterID,
+                'id'   => $character->characterID,
                 'name' => $character->characterName,
             ];
 
@@ -441,7 +442,7 @@ class FittingController extends Controller implements CalculateConstants
 
                 $skillsToons['characters'][$index]['skill'][$skill->typeID] = [
                     'level' => $skill->level,
-                    'rank' => $rank->valueFloat,
+                    'rank'  => $rank->valueFloat,
                 ];
             }
 
@@ -456,7 +457,7 @@ class FittingController extends Controller implements CalculateConstants
 
                 $skillsToons['characters'][$index]['skill'][$skill['typeId']] = [
                     'level' => 0,
-                    'rank' => $rank->valueFloat,
+                    'rank'  => $rank->valueFloat,
                 ];
             }
         }
