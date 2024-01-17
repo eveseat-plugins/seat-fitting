@@ -235,7 +235,7 @@ class FittingController extends Controller implements CalculateConstants
         $evepraisal = setting("fitting.evepraisal.domain", true);
 
         $response = (new Client())
-            ->request('POST', "https://$evepraisal/appraisal?market=jita&persist=no&format=json&type=evaluation", [
+            ->request('POST', "$evepraisal/appraisal?market=jita&persist=no&format=json&type=evaluation", [
                 'multipart' => [
                     [
                         'name' => 'uploadappraisal',
