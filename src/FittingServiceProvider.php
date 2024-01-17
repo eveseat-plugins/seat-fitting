@@ -97,7 +97,7 @@ class FittingServiceProvider extends AbstractSeatPlugin
      */
     public function getPackageRepositoryUrl(): string
     {
-        return 'https://github.com/dysath/seat-fitting';
+        return 'https://github.com/hermesdj/seat-fitting';
     }
 
     /**
@@ -121,6 +121,6 @@ class FittingServiceProvider extends AbstractSeatPlugin
      */
     public function getPackagistVendorName(): string
     {
-        return 'denngarr';
+        return 'hermesdj';
     }
 }
