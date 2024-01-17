@@ -1,39 +1,40 @@
 {
-    "name": "hermesdj/seat-fitting",
-    "description": "Module to check fittings per character",
-    "type": "seat-plugin",
-    "license": "GPL-2.0-only",
-    "authors": [
-        {
-            "name": "Denngarr B'tarn",
-            "email": "ed.stafford@gmail.com"
-        },
-        {
-            "name": "Crypta Electrica",
-            "email": "crypta@crypta.tech"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "autoload": {
-        "psr-4": {
-            "Denngarr\\Seat\\Fitting\\": "src/"
-        }
+  "name": "hermesdj/seat-fitting",
+  "description": "Module to check fittings per character",
+  "type": "seat-plugin",
+  "license": "GPL-2.0-only",
+  "authors": [
+    {
+      "name": "Denngarr B'tarn",
+      "email": "ed.stafford@gmail.com"
     },
-     "extra": {
-        "laravel": {
-            "providers": [
-                "Denngarr\\Seat\\Fitting\\FittingServiceProvider"
-            ]
-        }
-    },
-    "require": {
-        "eveseat/services": "^5.0",
-        "eveseat/eveapi": "^5.0",
-        "eveseat/web": "^5.0"
-    },
-    "require-dev": {
-        "rector/rector": "^0.18.3",
-        "driftingly/rector-laravel": "^0.24.1"
+    {
+      "name": "Crypta Electrica",
+      "email": "crypta@crypta.tech"
     }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Denngarr\\Seat\\Fitting\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Denngarr\\Seat\\Fitting\\FittingServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "eveseat/services": "^5.0",
+    "eveseat/eveapi": "^5.0",
+    "eveseat/api": "^5.0",
+    "eveseat/web": "^5.0"
+  },
+  "require-dev": {
+    "rector/rector": "^0.18.3",
+    "driftingly/rector-laravel": "^0.24.1"
+  }
 }
