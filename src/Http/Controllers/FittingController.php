@@ -219,7 +219,7 @@ class FittingController extends Controller implements CalculateConstants
     {
         $fit = Fitting::find($id);
 
-        $eft = implode("\n", $fit->eftfitting);
+        // $eft = implode("\n", $fit->eftfitting);
         $evepraisal = setting('fitting.evepraisal.domain', true);
 
         $response = (new Client())
