@@ -12,7 +12,6 @@ class Fitting extends Model
 
     protected $fillable = ['id', 'shiptype', 'fitname', 'eftfitting'];
 
-
     public function doctrines()
     {
 

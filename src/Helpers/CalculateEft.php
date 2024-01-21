@@ -1,11 +1,11 @@
-<?PHP
+<?php
 
 namespace CryptaTech\Seat\Fitting\Helpers;
 
-use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
+use Seat\Eveapi\Models\Sde\InvType;
 
-trait CalculateEft 
+trait CalculateEft
 {
     private $ctx;
 
@@ -27,7 +27,7 @@ trait CalculateEft
     private function modifyRequiredSkills($fitting)
     {
         // skip this, if dogma extension isn't loaded
-        if (!extension_loaded('dogma')) {
+        if (! extension_loaded('dogma')) {
             return;
         }
 
@@ -73,16 +73,16 @@ trait CalculateEft
     {
         switch ($type) {
             case 'cpu':
-                $index =& $this->cpu_raise_index;
+                $index = &$this->cpu_raise_index;
                 $skillsOrder = self::CPU_SKILL_ORDER;
                 break;
             case 'powergrid':
-                $index =& $this->pg_raise_index;
+                $index = &$this->pg_raise_index;
                 $skillsOrder = self::PG_SKILL_ORDER;
                 break;
         }
 
-        if (!isset($skillsOrder[$index])) {
+        if (! isset($skillsOrder[$index])) {
             return self::RAISE_CANNOT_RAISE;
         }
 
@@ -166,7 +166,7 @@ trait CalculateEft
         $fitsplit = explode("\n", $fitting);
 
         // get shipname of first line by removing brackets
-        list($shipname, $fitname) = explode(", ", substr(array_shift($fitsplit), 1, -1));
+        [$shipname, $fitname] = explode(', ', substr(array_shift($fitsplit), 1, -1));
 
         $fit_all_items = [];
         $fit_calc_items = [];
@@ -176,7 +176,7 @@ trait CalculateEft
 
         foreach ($fitsplit as $key => $line) {
             // split line to get charge
-            $linesplit = explode(",", $line);
+            $linesplit = explode(',', $line);
 
             if (isset($linesplit[1])) {
                 $fit_all_items[] = $linesplit[1];
@@ -213,16 +213,15 @@ trait CalculateEft
     private function sanatizeFittingBlock($fitting)
     {
         // remove useless empty lines and whatnot
-        $fitting = preg_replace("/\[Empty .+ slot\]/", "", $fitting);
+        $fitting = preg_replace("/\[Empty .+ slot\]/", '', $fitting);
 
-        return ltrim(rtrim(preg_replace("/^[ \t]*[\r\n]+/m", "", $fitting)));
+        return ltrim(rtrim(preg_replace("/^[ \t]*[\r\n]+/m", '', $fitting)));
     }
 
     private function sanatizeTypeName($item)
     {
         // remove amount for charges
         // sample: Scourge Rage Heavy Assault Missile x66
-        return ltrim(rtrim(preg_replace("/ x\d+/", "", $item)));
+        return ltrim(rtrim(preg_replace("/ x\d+/", '', $item)));
     }
-
-};
+}

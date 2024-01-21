@@ -15,7 +15,7 @@ class FittingValidation extends FormRequest
     {
         return [
             'fitSelection' => 'nullable',
-            'eftfitting' => 'required'
+            'eftfitting' => 'required',
         ];
     }
 }

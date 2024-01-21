@@ -15,9 +15,7 @@ class DoctrineValidation extends FormRequest
     {
         return [
             'doctrinename' => 'required|string',
-            'selectedFits' => 'required|array|min:1'
+            'selectedFits' => 'required|array|min:1',
         ];
     }
 }
-
-?>
