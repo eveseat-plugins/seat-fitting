@@ -1,6 +1,6 @@
 <?php
 
-namespace Denngarr\Seat\Fitting\Models;
+namespace CryptaTech\Seat\Fitting\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

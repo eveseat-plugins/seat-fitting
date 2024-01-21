@@ -1,6 +1,6 @@
 <?php
 
-namespace Denngarr\Seat\Fitting;
+namespace CryptaTech\Seat\Fitting;
 
 use Seat\Services\AbstractSeatPlugin;
 
@@ -121,6 +121,6 @@ class FittingServiceProvider extends AbstractSeatPlugin
      */
     public function getPackagistVendorName(): string
     {
-        return 'denngarr';
+        return 'cryptatech';
     }
 }

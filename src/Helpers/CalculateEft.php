@@ -1,6 +1,6 @@
 <?PHP
 
-namespace Denngarr\Seat\Fitting\Helpers;
+namespace CryptaTech\Seat\Fitting\Helpers;
 
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;

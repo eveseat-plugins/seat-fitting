@@ -1,6 +1,6 @@
 <?PHP
 
-namespace Denngarr\Seat\Fitting\Helpers;
+namespace CryptaTech\Seat\Fitting\Helpers;
 
 interface CalculateConstants
 {

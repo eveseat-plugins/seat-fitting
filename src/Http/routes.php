@@ -1,42 +1,42 @@
 <?php
 
 Route::group([
-    'namespace' => 'Denngarr\Seat\Fitting\Http\Controllers',
+    'namespace' => 'CryptaTech\Seat\Fitting\Http\Controllers',
     'middleware' => ['web', 'auth'],
     'prefix' => 'api/v2/fitting/web',
 ], function () {
     Route::get('/fitting/list', [
-        'as' => 'fitting.api.web.fitting.list',
+        'as' => 'cryptafitting::api.web.fitting.list',
         'uses' => 'ApiFittingController@getFittingList',
     ]);
     Route::get('/fitting/get/{id}', [
-        'as' => 'fitting.api.web.fitting.get',
+        'as' => 'cryptafitting::api.web.fitting.get',
         'uses' => 'ApiFittingController@getFittingById',
     ]);
     Route::get('/doctrine/list', [
-        'as' => 'fitting.api.web.doctrine.list',
+        'as' => 'cryptafitting::api.web.doctrine.list',
         'uses' => 'ApiFittingController@getDoctrineList',
     ]);
     Route::get('/doctrine/get/{id}', [
-        'as' => 'fitting.api.web.doctrine.get',
+        'as' => 'cryptafitting::api.web.doctrine.get',
         'uses' => 'ApiFittingController@getDoctrineById',
     ]);
 });
 
 Route::group([
-    'namespace' => 'Denngarr\Seat\Fitting\Http\Controllers',
+    'namespace' => 'CryptaTech\Seat\Fitting\Http\Controllers',
     'prefix' => 'fitting'
 ], function () {
     Route::group([
         'middleware' => ['web', 'auth'],
     ], function () {
         Route::get('/', [
-            'as'   => 'fitting.view',
+            'as'   => 'cryptafitting::view',
             'uses' => 'FittingController@getFittingView',
             'middleware' => 'can:fitting.view'
         ]);
         Route::get('/about', [
-            'as'   => 'fitting.about',
+            'as'   => 'cryptafitting::about',
             'uses' => 'FittingController@getAboutView',
             'middleware' => 'can:fitting.view'
         ]);
@@ -51,17 +51,17 @@ Route::group([
             'middleware' => 'can:fitting.settings'
         ]);
         Route::post('/postfitting', [
-            'as'   => 'fitting.postFitting',
+            'as'   => 'cryptafitting::postFitting',
             'uses' => 'FittingController@postFitting',
             'middleware' => 'can:fitting.view'
         ]);
         Route::post('/postskills', [
-            'as'   => 'fitting.postSkills',
+            'as'   => 'cryptafitting::postSkills',
             'uses' => 'FittingController@postSkills',
             'middleware' => 'can:fitting.view'
         ]);
         Route::post('/savefitting', [
-            'as'   => 'fitting.saveFitting',
+            'as'   => 'cryptafitting::saveFitting',
             'uses' => 'FittingController@saveFitting',
             'middleware' => 'can:fitting.create'
         ]);
@@ -70,12 +70,12 @@ Route::group([
             'middleware' => 'can:fitting.doctrineview'
         ]);
         Route::get('/getfittingcostbyid/{id}', [
-            'as' => 'fitting.appraiseFitting',
+            'as' => 'cryptafitting::appraiseFitting',
             'uses' => 'FittingController@getFittingCostById',
             'middleware' => 'can:fitting.doctrineview'
         ]);
         Route::get('/getdoctrinebyid/{id}', [
-            'as'   => 'fitting.getDoctrineById',
+            'as'   => 'cryptafitting::getDoctrineById',
             'uses' => 'FittingController@getDoctrineById',
             'middleware' => 'can:fitting.doctrineview'
         ]);
@@ -92,42 +92,42 @@ Route::group([
             'middleware' => 'can:fitting.create'
         ]);
         Route::get('/doctrine', [
-            'as'   => 'fitting.doctrineview',
+            'as'   => 'cryptafitting::doctrineview',
             'uses' => 'FittingController@getDoctrineView',
             'middleware' => 'can:fitting.doctrineview'
         ]);
         Route::get('/fittinglist', [
-            'as'   => 'fitting.fitlist',
+            'as'   => 'cryptafitting::fitlist',
             'uses' => 'FittingController@getFittingList',
             'middleware' => 'can:fitting.view'
         ]);
         Route::get('/rolelist', [
-            'as'   => 'fitting.rolelist',
+            'as'   => 'cryptafitting::rolelist',
             'uses' => 'FittingController@getRoleList',
             'middleware' => 'can:fitting.view'
         ]);
         Route::post('/addDoctrine', [
-            'as'   => 'fitting.addDoctrine',
+            'as'   => 'cryptafitting::addDoctrine',
             'uses' => 'FittingController@saveDoctrine',
             'middleware' => 'can:fitting.create'
         ]);
         Route::get('/getdoctrineedit/{id}', [
-            'as'   => 'fitting.getDoctrineEdit',
+            'as'   => 'cryptafitting::getDoctrineEdit',
             'uses' => 'FittingController@getDoctrineEdit',
             'middleware' => 'can:fitting.create'
         ]);
         Route::get('/deldoctrinebyid/{id}', [
-            'as'   => 'fitting.delDoctrineById',
+            'as'   => 'cryptafitting::delDoctrineById',
             'uses' => 'FittingController@delDoctrineById',
             'middleware' => 'can:fitting.create'
         ]);
         Route::get('/doctrineReport', [
-            'as'   => 'fitting.doctrinereport',
+            'as'   => 'cryptafitting::doctrinereport',
             'uses' => 'FittingController@viewDoctrineReport',
             'middleware' => 'can:fitting.reportview'
         ]);
         Route::get('/runReport/{allianceid}/{corpid}/{doctrineid}', [
-            'as'   => 'fitting.runreport',
+            'as'   => 'cryptafitting::runreport',
             'uses' => 'FittingController@runReport',
             'middleware' => 'can:fitting.reportview'
         ]);

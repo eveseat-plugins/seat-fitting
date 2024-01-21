@@ -1,6 +1,6 @@
 <?php
 
-namespace Denngarr\Seat\Fitting\Http\Controllers;
+namespace CryptaTech\Seat\Fitting\Http\Controllers;
 
 use Illuminate\Support\Facades\Gate;
 use Seat\Web\Http\Controllers\Controller;
@@ -15,12 +15,12 @@ use Seat\Eveapi\Models\Character\CharacterSkill;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
-use Denngarr\Seat\Fitting\Helpers\CalculateConstants;
-use Denngarr\Seat\Fitting\Helpers\CalculateEft;
-use Denngarr\Seat\Fitting\Models\Fitting;
-use Denngarr\Seat\Fitting\Models\Doctrine;
-use Denngarr\Seat\Fitting\Validation\FittingValidation;
-use Denngarr\Seat\Fitting\Validation\DoctrineValidation;
+use CryptaTech\Seat\Fitting\Helpers\CalculateConstants;
+use CryptaTech\Seat\Fitting\Helpers\CalculateEft;
+use CryptaTech\Seat\Fitting\Models\Fitting;
+use CryptaTech\Seat\Fitting\Models\Doctrine;
+use CryptaTech\Seat\Fitting\Validation\FittingValidation;
+use CryptaTech\Seat\Fitting\Validation\DoctrineValidation;
 
 class FittingController extends Controller implements CalculateConstants
 {
@@ -38,6 +38,12 @@ class FittingController extends Controller implements CalculateConstants
         ]);
 
         setting(["fitting.evepraisal.domain", $request->evepraisal], true);
+
+        // $request->validate([
+        //     "price_source" => "required|integer"
+        // ]);
+
+        // setting(["cryptatech_seat_fitting_price_provider", $request->price_source], true);
 
         return redirect()->back()->with("success","Updated settings");
     }
@@ -215,9 +221,9 @@ class FittingController extends Controller implements CalculateConstants
     {
         $fit = Fitting::find($id);
 
-        // $eft = implode("\n", $fit->eftfitting);
+        $eft = implode("\n", $fit->eftfitting);
         $evepraisal = setting("fitting.evepraisal.domain", true);
-        
+
         $response = (new Client())
             ->request('POST', "https://$evepraisal/appraisal.json?market=jita&persist=no", [
                 'multipart' => [
@@ -490,7 +496,7 @@ class FittingController extends Controller implements CalculateConstants
             $doctrine->fittings()->sync($request->selectedFits);
         }
 
-        return redirect()->route('fitting.doctrineview');
+        return redirect()->route('cryptafitting::doctrineview');
     }
 
     public function viewDoctrineReport()

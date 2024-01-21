@@ -58,7 +58,7 @@
         </table>
         </div>
         <div class="card-footer text-muted">
-            Plugin maintained by <a href="{{ route('fitting.about') }}"> {!! img('characters', 'portrait', 96057938, 64, ['class' => 'img-circle eve-icon small-icon']) !!} Crypta Electrica</a>. <span class="float-right snoopy" style="color: #fa3333;"><i class="fas fa-signal"></i></span>
+            Plugin maintained by <a href="{{ route('cryptafitting::about') }}"> {!! img('characters', 'portrait', 96057938, 64, ['class' => 'img-circle eve-icon small-icon']) !!} Crypta Electrica</a>. <span class="float-right snoopy" style="color: #fa3333;"><i class="fas fa-signal"></i></span>
         </div>
     </div>
 
@@ -85,7 +85,7 @@
              <h4 class="modal-title">Are you sure?</h4>
              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
            </div>
-           <form role="form" action="{{ route('fitting.saveFitting') }}" method="post">
+           <form role="form" action="{{ route('cryptafitting::saveFitting') }}" method="post">
                <input type="hidden" id="fitSelection" name="fitSelection" value="0">
                <div class="modal-body">
                    <p>Cut and Paste EFT fitting in the box below</p>

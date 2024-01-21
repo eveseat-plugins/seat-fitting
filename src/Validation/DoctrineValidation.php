@@ -1,6 +1,6 @@
 <?php
 
-namespace Denngarr\Seat\Fitting\Validation;
+namespace CryptaTech\Seat\Fitting\Validation;
 
 use Illuminate\Foundation\Http\FormRequest;
 

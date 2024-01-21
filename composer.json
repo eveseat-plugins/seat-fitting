@@ -1,5 +1,5 @@
 {
-    "name": "denngarr/seat-fitting",
+    "name": "cryptatech/seat-fitting",
     "description": "Module to check fittings per character",
     "type": "seat-plugin",
     "license": "GPL-2.0-only",
@@ -16,20 +16,21 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Denngarr\\Seat\\Fitting\\": "src/"
+            "CryptaTech\\Seat\\Fitting\\": "src/"
         }
     },
      "extra": {
         "laravel": {
             "providers": [
-                "Denngarr\\Seat\\Fitting\\FittingServiceProvider"
+                "CryptaTech\\Seat\\Fitting\\FittingServiceProvider"
             ]
         }
     },
     "require": {
-        "eveseat/services": "^4.1",
-        "eveseat/eveapi": "^4.0",
-        "eveseat/web": "^4.0"
+        "eveseat/services": "^5.0.1",
+        "eveseat/eveapi": "^5.0",
+        "eveseat/web": "^5.0",
+        "recursivetree/seat-prices-core": "^1.0"
     }
 }
 

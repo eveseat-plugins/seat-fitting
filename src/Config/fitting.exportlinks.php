@@ -2,7 +2,7 @@
 
 return [
 //    'example'=>[
-//        "route"=>"fitting.about",//receives the id as argument
+//        "route"=>"cryptafitting::about",//receives the id as argument
 //        "name"=>"open in seat-alliance-industry"
 //    ],
 //    'example2'=>[

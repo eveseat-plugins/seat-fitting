@@ -1,10 +1,10 @@
 <?php
 
-namespace Denngarr\Seat\Fitting\Models;
+namespace CryptaTech\Seat\Fitting\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Web\Models\Acl\Role;
-use Denngarr\Seat\Fitting\Models\Fitting;
+use CryptaTech\Seat\Fitting\Models\Fitting;
 
 class Doctrine extends Model
 {

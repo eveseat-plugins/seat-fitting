@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('fitting.addDoctrine') }}" id="addDocForm">
+<form method="POST" action="{{ route('cryptafitting::addDoctrine') }}" id="addDocForm">
     <div class="modal fade" tabindex="-1" role="dialog" id="addDoctrine">
         <div class="modal-dialog">
             <div class="modal-content">

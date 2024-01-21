@@ -1,13 +1,13 @@
 <?php
 
-namespace Denngarr\Seat\Fitting\Http\Controllers;
+namespace CryptaTech\Seat\Fitting\Http\Controllers;
 
 use Seat\Api\Http\Controllers\Api\v2\ApiController;
-use Denngarr\Seat\Fitting\Http\Controllers\FittingController;
+use CryptaTech\Seat\Fitting\Http\Controllers\FittingController;
 
 /**
  * Class ApiFittingController.
- * @package Denngarr\Seat\Fitting\Http\Controllers
+ * @package CryptaTech\Seat\Fitting\Http\Controllers
  */
 class ApiFittingController extends ApiController
 {
