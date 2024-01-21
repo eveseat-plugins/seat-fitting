@@ -6,6 +6,5 @@ return [
 
     'about' => 'About',
     'fitting' => 'Fitting',
-    'settings' => 'Settings'
+    'settings' => 'Settings',
 ];
-

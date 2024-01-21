@@ -4,7 +4,6 @@ namespace CryptaTech\Seat\Fitting\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Web\Models\Acl\Role;
-use CryptaTech\Seat\Fitting\Models\Fitting;
 
 class Doctrine extends Model
 {
@@ -23,5 +22,4 @@ class Doctrine extends Model
     {
         return $this->belongsToMany(Role::class, 'seat_doctrine_role');
     }
-
 }
