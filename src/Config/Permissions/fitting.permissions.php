@@ -7,28 +7,28 @@
 
 return [
     'view' => [
-        'label' => 'View Fittings',
-        'description' => 'Ability to see the fittings page',
+        'label' => 'fitting::config.permission_view_fitting_label',
+        'description' => 'fitting::config.permission_view_fitting_desc',
         'division' => 'military'
     ],
     'create' => [
-        'label' => 'Create Fittings',
-        'description' => 'Ability to submit new fittings/doctrines',
+        'label' => 'fitting::config.permission_create_fitting_label',
+        'description' => 'fitting::config.permission_create_fitting_desc',
         'division' => 'military'
     ],
     'doctrineview' => [
-        'label' => 'View Doctrines',
-        'description' => 'Ability to see the doctrines page',
+        'label' => 'fitting::config.permission_view_doctrine_label',
+        'description' => 'fitting::config.permission_view_doctrine_desc',
         'division' => 'military'
     ],
     'reportview' => [
-        'label' => 'View Reports',
-        'description' => 'View Reports',
+        'label' => 'fitting::config.permission_view_reports_label',
+        'description' => 'fitting::config.permission_view_reports_desc',
         'division' => 'military'
     ],
     'settings' => [
-        'label' => 'Settings',
-        'description' => 'Settings',
+        'label' => 'fitting::config.permission_settings_label',
+        'description' => 'fitting::config.permission_settings_desc',
         'division' => 'military'
     ],
 ];

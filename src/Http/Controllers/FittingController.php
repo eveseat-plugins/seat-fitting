@@ -2,16 +2,23 @@
 
 namespace Denngarr\Seat\Fitting\Http\Controllers;
 
+use Denngarr\Seat\Fitting\Exceptions\FittingParserBadFormatException;
 use Denngarr\Seat\Fitting\Helpers\CalculateConstants;
 use Denngarr\Seat\Fitting\Helpers\CalculateEft;
+use Denngarr\Seat\Fitting\Helpers\FittingHelper;
 use Denngarr\Seat\Fitting\Models\Doctrine;
 use Denngarr\Seat\Fitting\Models\Fitting;
 use Denngarr\Seat\Fitting\Validation\DoctrineValidation;
 use Denngarr\Seat\Fitting\Validation\FittingValidation;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use RecursiveTree\Seat\PricesCore\Exceptions\PriceProviderException;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
@@ -28,18 +35,23 @@ class FittingController extends Controller implements CalculateConstants
 
     private $requiredSkills = [];
 
-    public function getSettings()
+    public function getSettings(): View|Application|Factory
     {
         return view("fitting::settings");
     }
 
-    public function saveSettings(Request $request)
+    /**
+     * @throws SettingException
+     */
+    public function saveSettings(Request $request): RedirectResponse
     {
         $request->validate([
-            "evepraisal" => "required|string"
+            'admin_price_provider' => 'required|numeric',
+            'show_about_footer' => 'boolean'
         ]);
 
-        setting(["fitting.evepraisal.domain", $request->evepraisal], true);
+        setting(["fitting.admin_price_provider", (int)$request->input('admin_price_provider')], true);
+        setting(["fitting.show_about_footer", (bool)$request->input('show_about_footer')], true);
 
         return redirect()->back()->with("success", "Updated settings");
     }
@@ -183,13 +195,13 @@ class FittingController extends Controller implements CalculateConstants
         return json_encode($skillsToons, JSON_THROW_ON_ERROR);
     }
 
-    protected function getFittings()
+    protected function getFittings(): Collection
     {
         return Fitting::all();
     }
 
     /**
-     * @return mixed[]
+     * @return array
      */
     public function getFittingList(): array
     {
@@ -224,35 +236,20 @@ class FittingController extends Controller implements CalculateConstants
 
     /**
      * @throws SettingException
-     * @throws GuzzleException
+     * @throws FittingParserBadFormatException
+     * @throws PriceProviderException
      * @throws \JsonException
      */
-    public function getFittingCostById($id): \Illuminate\Http\JsonResponse
+    public function getFittingCostById($id): JsonResponse
     {
         $fit = Fitting::find($id);
 
-        // $eft = implode("\n", $fit->eftfitting);
-        $evepraisal = setting("fitting.evepraisal.domain", true);
+        $items = FittingHelper::parseEveFittingData($fit->eftfitting);
 
-        $response = (new Client())
-            ->request('POST', "$evepraisal/appraisal?market=jita&persist=no&format=json&type=evaluation", [
-                'multipart' => [
-                    [
-                        'name' => 'uploadappraisal',
-                        'contents' => $fit->eftfitting,
-                        'filename' => 'notme',
-                        'headers' => [
-                            'Content-Type' => 'text/plain',
-                            'User-Agent' => 'seat-srp'
-                        ]
-                    ],
-                ]
-            ]);
-
-        return response()->json(json_decode($response->getBody()->getContents(), null, 512, JSON_THROW_ON_ERROR));
+        return response()->json(FittingHelper::toFittingEvaluation($items));
     }
 
-    public function getFittingById($id): \Illuminate\Http\JsonResponse
+    public function getFittingById($id): JsonResponse
     {
         $fitting = Fitting::find($id);
 
@@ -266,7 +263,7 @@ class FittingController extends Controller implements CalculateConstants
         return response()->json($response);
     }
 
-    public function getFittingView(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function getFittingView(): View|Application|Factory
     {
         $corps = [];
         $fitlist = $this->getFittingList();

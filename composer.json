@@ -11,6 +11,10 @@
     {
       "name": "Crypta Electrica",
       "email": "crypta@crypta.tech"
+    },
+    {
+      "name": "Jay's",
+      "email": "jays.gaming.contact@gmail.com"
     }
   ],
   "minimum-stability": "dev",
@@ -31,7 +35,9 @@
     "eveseat/services": "^5.0",
     "eveseat/eveapi": "^5.0",
     "eveseat/api": "^5.0",
-    "eveseat/web": "^5.0"
+    "eveseat/web": "^5.0",
+    "recursivetree/seat-prices-core": "^1",
+    "recursivetree/seat-treelib": "^2.0"
   },
   "require-dev": {
     "rector/rector": "^0.18.3",

@@ -17,11 +17,23 @@ class FittingServiceProvider extends AbstractSeatPlugin
         $this->add_views();
         $this->add_translations();
 
-        $this->publishes([
-            __DIR__.'/Config/fitting.exportlinks.php' => config_path('fitting.exportlinks.php')],["config","seat"]
-        );
+        $this->addPublications();
 
         $this->addMigrations();
+    }
+
+    private function addPublications(): void
+    {
+        $this->publishes([
+            __DIR__ . '/Config/fitting.exportlinks.php' => config_path('fitting.exportlinks.php'),
+        ],
+            ["config", "seat"],
+        );
+
+        $this->publishes([
+            __DIR__ . '/resources/assets/css' => public_path('web/css'),
+            __DIR__ . '/resources/assets/js' => public_path('web/js'),
+        ]);
     }
 
     /**
@@ -29,7 +41,7 @@ class FittingServiceProvider extends AbstractSeatPlugin
      */
     public function add_routes(): void
     {
-        if (! $this->app->routesAreCached()) {
+        if (!$this->app->routesAreCached()) {
             include __DIR__ . '/Http/routes.php';
         }
     }
@@ -78,9 +90,9 @@ class FittingServiceProvider extends AbstractSeatPlugin
     /**
      * Return the plugin public name as it should be displayed into settings.
      *
+     * @return string
      * @example SeAT Web
      *
-     * @return string
      */
     public function getName(): string
     {
@@ -103,9 +115,9 @@ class FittingServiceProvider extends AbstractSeatPlugin
     /**
      * Return the plugin technical name as published on package manager.
      *
+     * @return string
      * @example web
      *
-     * @return string
      */
     public function getPackagistPackageName(): string
     {
@@ -115,9 +127,9 @@ class FittingServiceProvider extends AbstractSeatPlugin
     /**
      * Return the plugin vendor tag as published on package manager.
      *
+     * @return string
      * @example eveseat
      *
-     * @return string
      */
     public function getPackagistVendorName(): string
     {
