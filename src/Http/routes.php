@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::group([
     'namespace' => 'Denngarr\Seat\Fitting\Http\Controllers',
-    'middleware' => ['web', 'auth'],
+    'middleware' => ['web', 'auth', 'locale'],
     'prefix' => 'api/v2/fitting/web',
 ], function (): void {
     Route::get('/fitting/list', [
@@ -28,7 +30,7 @@ Route::group([
     'prefix' => 'fitting'
 ], function (): void {
     Route::group([
-        'middleware' => ['web', 'auth'],
+        'middleware' => ['web', 'auth', 'locale'],
     ], function (): void {
         Route::get('/', [
             'as'   => 'fitting.view',
