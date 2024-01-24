@@ -3,21 +3,21 @@
 return [
     'page_title' => 'Doctrines',
 
-    'add_doctrine_btn' => 'Create a new Doctrine',
-    'select_doctrine_option' => 'Choose Doctrine...',
+    'add_doctrine_btn' => 'Créer une nouvelle Doctrine',
+    'select_doctrine_option' => 'Choisir une Doctrine...',
 
-    'edit_doctrine_btn' => 'Edit Doctrine',
-    'delete_doctrine_btn' => 'Delete Doctrine',
+    'edit_doctrine_btn' => 'Editer une Doctrine',
+    'delete_doctrine_btn' => 'Supprimer une Doctrine',
 
-    'add_new_doctrine_title' => 'Add a New Doctrine',
-    'doctrine_name_label' => 'Doctrine Name',
-    'doctrine_fits_label' => 'Select Fits to Add to Doctrine',
-    'doctrine_fits_add_btn' => 'Add Fit(s)',
-    'doctrine_fits_remove_btn' => 'Remove Fit(s)',
-    'doctrine_chosen_fits_label' => 'Chosen Fits',
+    'add_new_doctrine_title' => 'Ajouter une nouvelle Doctrine',
+    'doctrine_name_label' => 'Nom de Doctrine',
+    'doctrine_fits_label' => 'Choisissez des Fits à ajouter à une Doctrine',
+    'doctrine_fits_add_btn' => 'Ajouter un/des Fit(s)',
+    'doctrine_fits_remove_btn' => 'Retirer un/des Fit(s)',
+    'doctrine_chosen_fits_label' => 'Fits choisis',
 
-    'delete_doctrine_modal_title' => 'Are you sure?',
-    'delete_doctrine_modal_body' => 'Are you sure you want to delete this doctrine?',
+    'delete_doctrine_modal_title' => 'Etes vous sûr ?',
+    'delete_doctrine_modal_body' => 'Etes vous sur de vouloir supprimer cette Doctrine ?',
 
     'report_page_title' => 'Doctrine Report',
 

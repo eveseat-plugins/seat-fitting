@@ -1,24 +1,24 @@
 <?php
 
 return [
-    'page_title' => 'About',
-    'page_description' => 'Information about the plugin',
+    'page_title' => 'A propos',
+    'page_description' => 'Informations à propos du plugin',
 
-    'functionality_title' => 'Functionality',
-    'functionality_body' => 'This plugin allows for the storing of eve fittings. Fittings can be further organised into doctrines, and reports can be run to see ability to use doctrines.',
+    'functionality_title' => 'Fonctionnalité',
+    'functionality_body' => 'Ce plugin permet de stocker les fittings d\'Eve. Les fittings peuvent être organisés en doctrines et des simulations peuvent être exécutées pour vérifier la capacité à utiliser les doctrines.',
 
-    'thanks_title' => 'THANK YOU!',
-    'thanks_intro' => ' Both <strong>SeAT</strong> and <strong>Seat-Fitting</strong> are community creations designed to
-                    benefit you! I sincerely hope you enjoy using them. If you are feeling generous then please feel
-                    free to front up some isk to either of the projects.',
-    'thanks_footer' => 'If you are one of those people who feels ISK is never enough..... I will just drop this here.... my
+    'thanks_title' => 'MERCI!',
+    'thanks_intro' => '<strong>SeAT</strong> et <strong>Seat-Fitting</strong> sont des créations communautaires conçues pour
+                    votre profit ! J\'espère sincèrement que vous apprécierez les utiliser. Si vous vous sentez généreux, alors sentez-vous
+                    libre d\'avancer des fonds pour l\'un ou l\'autre des projets.',
+    'thanks_footer' => 'Si vous faites partie de ces personnes qui pensent que les ISK ne suffisent jamais..... Je souhaite juste vous partager cela ici.... mon
                     <a href="https://www.patreon.com/cryptaelectrica"> patreon</a>.',
 
-    'maintained_by' => 'Plugin maintained by <a href=":route"> :img Crypta Electrica</a>. ',
+    'maintained_by' => 'Plugin maintenu par <a href=":route"> :img Crypta Electrica</a>. ',
 
     'info_title' => 'Info',
-    'info_body_legend' => 'Bugs and Feature Requests',
-    'info_body_text' => 'If you encounter a bug or have a suggestion, either contact Crypta-Eve on <a
-                        href="https://eveseat.github.io/docs/about/contact/">SeAT-Discord</a> or submit an <a
-                        href="https://github.com/dysath/seat-fitting/issues/new">issue on Github</a>'
+    'info_body_legend' => 'Bugs et demande de fonctionnalités',
+    'info_body_text' => 'Si vous rencontrez un bug ou avez une suggestion, contactez Crypta-Eve sur <a
+                        href="https://eveseat.github.io/docs/about/contact/">SeAT-Discord</a> ou soumettre un <a
+                        href="https://github.com/dysath/seat-fitting/issues/new">demande sur Github</a>'
 ];

@@ -4,23 +4,23 @@ return [
     'menu_title' => 'Doctrines & Fittings',
     'menu_fitting' => 'Fittings',
     'menu_doctrines' => 'Doctrines',
-    'menu_doctrine_report' => 'Doctrine Report',
-    'menu_about' => 'About',
-    'menu_settings' => 'Settings',
+    'menu_doctrine_report' => 'Rapport de doctrines',
+    'menu_about' => 'A propos',
+    'menu_settings' => 'Paramètres',
 
-    'permission_view_fitting_label' => 'View Fittings',
-    'permission_view_fitting_desc' => 'Ability to see the fittings page',
+    'permission_view_fitting_label' => 'Afficher les Fittings',
+    'permission_view_fitting_desc' => 'Possibilité de voir la page de fittings',
 
-    'permission_create_fitting_label' => 'Create Fittings/Doctrines',
-    'permission_create_fitting_desc' => 'Ability to submit new fittings/doctrines',
+    'permission_create_fitting_label' => 'Création de Fittings/Doctrines',
+    'permission_create_fitting_desc' => 'Possibilité de soumettre de nouvelles fittings/doctrines',
 
-    'permission_view_doctrine_label' => 'View Doctrines',
-    'permission_view_doctrine_desc' => 'Ability to see the doctrines page',
+    'permission_view_doctrine_label' => 'Afficher les Doctrines',
+    'permission_view_doctrine_desc' => 'Possibilité de voir la page des doctrines',
 
-    'permission_view_reports_label' => 'View Reports',
-    'permission_view_reports_desc' => 'View Doctrine Reports',
+    'permission_view_reports_label' => 'Afficher les rapports',
+    'permission_view_reports_desc' => 'Afficher les rapports de doctrines',
 
-    'permission_settings_label' => 'Settings',
-    'permission_settings_desc' => 'Ability to configure the plugin',
+    'permission_settings_label' => 'Paramtères',
+    'permission_settings_desc' => 'Possibilité de configurer le plugin',
 ];
 
