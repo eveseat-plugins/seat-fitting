@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'settings_title' => 'Settings',
+    'settings_title' => 'Paramètres',
 
-    'price_provider_label' => 'Price Provider',
-    'price_provider_description' => ' Select the price provider you want to fetch the fitting evaluation from',
+    'price_provider_label' => 'Fournisseur de Prix',
+    'price_provider_description' => ' Sélectionnez le fournisseur de prix auprès duquel vous souhaitez récupérer l\'évaluation appropriée.',
 
-    'show_about_footer' => 'Show About Footer',
+    'show_about_footer' => 'Afficher l\'à propos du pied de page',
 ];
