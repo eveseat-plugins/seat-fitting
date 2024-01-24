@@ -19,26 +19,26 @@ return [
     'delete_doctrine_modal_title' => 'Etes vous sûr ?',
     'delete_doctrine_modal_body' => 'Etes vous sur de vouloir supprimer cette Doctrine ?',
 
-    'report_page_title' => 'Doctrine Report',
+    'report_page_title' => 'Rapport de Doctrine',
 
     'report_alliance_label' => 'Alliance',
-    'report_alliance_note' => '<b>Note:</b> Report results are (can fly ship / can fly fitted ship)',
+    'report_alliance_note' => '<b>Note:</b> Les résultats du rapport sont (peut piloter le vaisseau / peut piloter le vaisseau équipé)',
 
     'report_corporation_label' => 'Corporation',
 
     'report_doctrine_label' => 'Doctrine',
 
-    'report_run_btn' => 'Run Report',
+    'report_run_btn' => 'Rapport d\'éxecution',
 
-    'report_box_alert_multiple_fitting_names' => 'It appears that you have duplicate fitting names. This will cause the report to not
-                function correctly. Please amend your fittings names.',
+    'report_box_alert_multiple_fitting_names' => 'Il semble que vous ayez des noms de fittings en double. Cela empêchera le rapport
+                de fonctionner correctement. Veuillez modifier les noms de vos fittings.',
 
-    'report_loading' => 'Loading...',
-    'report_run_btn_last_failed' => 'Run Report (Last Report Failed)',
-    'report_run_btn_last_timeout' => 'Run Report (Last Report Timed Out)',
+    'report_loading' => 'Chargement...',
+    'report_run_btn_last_failed' => 'Rapport d\'exécution (Échec du dernier rapport)',
+    'report_run_btn_last_timeout' => 'Rapport d\'exécution (Dernier rapport expiré)',
 
-    'report_character_header' => 'Character',
-    'report_hull_header' => 'HULL / FIT Totals',
+    'report_character_header' => 'Personnage',
+    'report_hull_header' => 'COQUE / FIT Totals',
     'report_fit_badge' => 'FIT'
 
 ];
