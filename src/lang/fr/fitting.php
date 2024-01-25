@@ -34,11 +34,11 @@ return [
     'fit_drone_bay_title' => 'Baie de drones',
     'fit_drone_bay_number' => 'Nombre',
 
-    'required_skills_title' => 'Compétences requises',
+    'required_skills_title' => 'Compétences Requises',
     'skills_required_level_header' => 'Niveau requis',
-    'skills_required_exceeded_header' => 'Dépassé',
-    'skills_required_missing_level_header' => 'Niveau manquant',
-    'skills_required_empty_level_header' => 'Niveau manquant',
+    'skills_required_exceeded_header' => 'Niveau Dépassé',
+    'skills_required_missing_level_header' => 'Niveau Manquant',
+    'skills_required_empty_level_header' => 'Niveau Absent',
 
     'skill_name_header' => 'Nom de compétence',
     'skill_level_header' => 'Niveau',
