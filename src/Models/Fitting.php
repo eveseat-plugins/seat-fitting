@@ -341,7 +341,7 @@ class Fitting extends Model
             // Fighter Capable!
             $hold = FittingItem::where('fitting_id', $fit->fitting_id)->where('flag', Fitting::BAY_CARGO)->get();
             foreach ($hold as $cargo) {
-                if ($cargo->type()->group()->first()->categoryID == 87) { // This is a fighter
+                if ($cargo->type()->first()->group()->first()->categoryID == 87) { // This is a fighter
                     $cargo->flag = Fitting::BAY_FIGHTER;
                     $cargo->save();
                 }
