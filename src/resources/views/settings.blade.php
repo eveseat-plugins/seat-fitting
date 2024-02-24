@@ -21,12 +21,9 @@
       @csrf
 
       <div class="form-group">
-        <label for="evepraisal">EvePraisal Domain</label>
-        <input type="text" name="evepraisal" id="evepraisal" value="{{setting("fitting.evepraisal.domain", true) ?? ""}}" class="form-control">
-        <small class="text-muted">Enter the domain to an evepraisal instance like www.goonpraisal.com</small>
-        <!-- <label for="price_source">Price Provider</label> -->
-        <!-- include("pricescore::utils.instance_selector",["id"=>"price_source","name"=>"price_source","instance_id"=>price_provider]) -->
-        <!-- <small class="text-muted">Manage price providers in the <a href="{{route('pricescore::settings')}}">price provider settings</a>.</small> -->
+        <label for="price_source">Price Provider</label>
+        @include("pricescore::utils.instance_selector",["id"=>"price_source","name"=>"price_source","instance_id"=>$provider])
+        <small class="text-muted">Manage price providers in the <a href="{{route('pricescore::settings')}}">price provider settings</a>.</small>
       </div>
 
 

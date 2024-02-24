@@ -3,6 +3,7 @@
 namespace CryptaTech\Seat\Fitting;
 
 use Seat\Services\AbstractSeatPlugin;
+use CryptaTech\Seat\Fitting\Commands\UpgradeFits;
 
 class FittingServiceProvider extends AbstractSeatPlugin
 {
@@ -16,12 +17,18 @@ class FittingServiceProvider extends AbstractSeatPlugin
         $this->add_routes();
         $this->add_views();
         $this->add_translations();
+        $this->add_commands();
 
-        $this->publishes([
-            __DIR__ . '/Config/fitting.exportlinks.php' => config_path('fitting.exportlinks.php')], ['config', 'seat']
+        $this->publishes(
+            [
+                __DIR__ . '/Config/fitting.exportlinks.php' => config_path('fitting.exportlinks.php')
+            ],
+            ['config', 'seat']
         );
 
         $this->addMigrations();
+
+        $this->registerSdeTables(['dgmAttributeTypes', 'dgmTypeAttributes', 'dgmEffects', 'dgmTypeEffects', 'invFlags']); // Make sure we have sufficient dogma
     }
 
     /**
@@ -29,9 +36,16 @@ class FittingServiceProvider extends AbstractSeatPlugin
      */
     public function add_routes()
     {
-        if (! $this->app->routesAreCached()) {
+        if (!$this->app->routesAreCached()) {
             include __DIR__ . '/Http/routes.php';
         }
+    }
+
+    private function add_commands()
+    {
+        $this->commands([
+            UpgradeFits::class,
+        ]);
     }
 
     public function add_translations()
@@ -55,7 +69,9 @@ class FittingServiceProvider extends AbstractSeatPlugin
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/Config/fitting.config.php', 'fitting.config');
+            __DIR__ . '/Config/fitting.config.php',
+            'fitting.config'
+        );
 
         $this->mergeConfigFrom(
             __DIR__ . '/Config/fitting.sidebar.php',
@@ -63,16 +79,14 @@ class FittingServiceProvider extends AbstractSeatPlugin
         );
 
         $this->registerPermissions(
-            __DIR__ . '/Config/Permissions/fitting.permissions.php', 'fitting');
+            __DIR__ . '/Config/Permissions/fitting.permissions.php',
+            'fitting'
+        );
     }
 
     private function addMigrations()
     {
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
-    }
-
-    private function addCommands()
-    {
     }
 
     /**

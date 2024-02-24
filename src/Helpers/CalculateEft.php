@@ -5,6 +5,14 @@ namespace CryptaTech\Seat\Fitting\Helpers;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvType;
 
+use CryptaTech\Seat\Fitting\Models\FittingItem;
+
+// There are some large performance gains to be had in this file... Simply through letting the DB do all the work for us.
+// However until such a time that pepole complain about speed, or I get bored, I will not be updating this.
+// The one exception is probably the Doctrine Report is too slow... Anyways.. 
+
+// Also need to replace the dogma section.
+
 trait CalculateEft
 {
     private $ctx;
@@ -15,12 +23,20 @@ trait CalculateEft
 
     public function calculate($fitting)
     {
+        $items = collect($fitting->fitItems->all());
+        $types = $items->map(function (FittingItem $v, $k){
+            return $v->type_id;
+        })->unique();
+        $this->getReqSkillsByTypeIDs($types);
+        // $this->modifyRequiredSkills($items['fit_items']); // Disabled for now
 
-        $items = $this->parseEftFitting($fitting);
-        $item_ids = $this->getUniqueTypeIDs($items['all_item_types']);
-        $this->getReqSkillsByTypeIDs($item_ids);
-        $this->modifyRequiredSkills($items['fit_items']);
+        return $this->getSkillNames($this->requiredSkills);
+    }
 
+    public function calculateIndividual(int $typeID)
+    {
+        $this->getReqSkillsByTypeIDs([$typeID]);
+        
         return $this->getSkillNames($this->requiredSkills);
     }
 
@@ -30,6 +46,7 @@ trait CalculateEft
         if (! extension_loaded('dogma')) {
             return;
         }
+        // Ahh! This is required in order to see if there is enough PG/CPU and raise it if we need to... Going to ignore this for now
 
         dogma_init_context($this->ctx);
         dogma_set_default_skill_level($this->ctx, 0);
@@ -107,7 +124,9 @@ trait CalculateEft
         $attributeids = array_merge(array_keys(self::REQ_SKILLS_ATTR_LEVELS), array_values(self::REQ_SKILLS_ATTR_LEVELS));
 
         foreach ($typeIDs as $type) {
-            $res = DgmTypeAttribute::where('typeid', $type['typeID'])->wherein('attributeID', $attributeids)->get();
+            if (gettype($type) == "array")
+                $type = $type['typeID'];
+            $res = DgmTypeAttribute::where('typeid', $type)->wherein('attributeID', $attributeids)->get();
 
             if (count($res) == 0) {
                 continue;
@@ -194,11 +213,6 @@ trait CalculateEft
             'all_item_types' => array_unique($fit_all_items),
             'fit_items' => $fit_calc_items,
         ];
-    }
-
-    private function getUniqueTypeIDs($items)
-    {
-        return InvType::wherein('typeName', $items)->get();
     }
 
     private function convertToTypeIDs($items)

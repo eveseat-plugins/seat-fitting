@@ -71,7 +71,7 @@
             <div id="exportLinks" class="mt-2 list-group"></div>
         </div>
         <div class="card-footer">
-        Current Jita Price (Buy /Sell)
+        Current Price (Ship / Total)
         <a id="current_appraisal" class="float-right">
         ?/? (ISK)
         </a>
@@ -294,7 +294,6 @@
                         $('#characterSpinner').append('<option value="'+result.characters[toons].id+'">'+result.characters[toons].name+'</option>');
                     }
                 }
-
                 fillSkills(result);
             }
         });
@@ -307,12 +306,13 @@
             dataType: 'json',
             timeout: 10000
 
-        }).done( function (result) {
-            if (result){
-                $buy = result.appraisal.totals.buy.toLocaleString();
-                $sell = result.appraisal.totals.sell.toLocaleString();
+        }).done( function (res) {
+            if (res){
+                let result = JSON.parse(res);
+                $ship = result.ship.toLocaleString();
+                $total = result.total.toLocaleString();
                 
-                $('#current_appraisal').html($buy + " / " + $sell + " (ISK)");
+                $('#current_appraisal').html($ship + " / " + $total + " (ISK)");
             }
         });
     });

@@ -101,11 +101,6 @@ Route::group([
             'uses' => 'FittingController@getFittingList',
             'middleware' => 'can:fitting.view',
         ]);
-        Route::get('/rolelist', [
-            'as' => 'cryptafitting::rolelist',
-            'uses' => 'FittingController@getRoleList',
-            'middleware' => 'can:fitting.view',
-        ]);
         Route::post('/addDoctrine', [
             'as' => 'cryptafitting::addDoctrine',
             'uses' => 'FittingController@saveDoctrine',

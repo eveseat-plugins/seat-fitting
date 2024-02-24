@@ -6,9 +6,9 @@ use CryptaTech\Seat\Fitting\Helpers\CalculateConstants;
 use CryptaTech\Seat\Fitting\Helpers\CalculateEft;
 use CryptaTech\Seat\Fitting\Models\Doctrine;
 use CryptaTech\Seat\Fitting\Models\Fitting;
+use CryptaTech\Seat\Fitting\Models\FittingItem;
 use CryptaTech\Seat\Fitting\Validation\DoctrineValidation;
 use CryptaTech\Seat\Fitting\Validation\FittingValidation;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Seat\Eveapi\Models\Alliances\Alliance;
@@ -18,7 +18,7 @@ use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Web\Http\Controllers\Controller;
-use Seat\Web\Models\Acl\Role;
+use RecursiveTree\Seat\PricesCore\Facades\PriceProviderSystem;
 
 class FittingController extends Controller implements CalculateConstants
 {
@@ -26,22 +26,20 @@ class FittingController extends Controller implements CalculateConstants
 
     private $requiredSkills = [];
 
-    public function getSettings() {
-        return view('fitting::settings');
+    public function getSettings()
+    {
+        $provider = setting('cryptatech_seat_fitting_price_provider', true);
+        return view('fitting::settings', compact(['provider']));
     }
 
-    public function saveSettings(Request $request) {
+    public function saveSettings(Request $request)
+    {
+
         $request->validate([
-            'evepraisal' => 'required|string',
+            "price_source" => "required|integer"
         ]);
 
-        setting(['fitting.evepraisal.domain', $request->evepraisal], true);
-
-        // $request->validate([
-        //     "price_source" => "required|integer"
-        // ]);
-
-        // setting(["cryptatech_seat_fitting_price_provider", $request->price_source], true);
+        setting(["cryptatech_seat_fitting_price_provider", $request->price_source], true);
 
         return redirect()->back()->with('success', 'Updated settings');
     }
@@ -56,20 +54,18 @@ class FittingController extends Controller implements CalculateConstants
         $doctrine_fittings = Doctrine::find($doctrine_id)->fittings()->get();
 
         foreach ($doctrine_fittings as $doctrine_fitting) {
-            array_push($doctrine_fits, $doctrine_fitting->id);
+            array_push($doctrine_fits, $doctrine_fitting->fitting_id);
         }
 
         foreach ($fittings as $fitting) {
-            $ship = InvType::where('typeName', $fitting->shiptype)->first();
-
             $entry = [
-                'id' => $fitting->id,
-                'shiptype' => $fitting->shiptype,
-                'fitname' => $fitting->fitname,
-                'typeID' => $ship->typeID,
+                'id' => $fitting->fitting_id,
+                'shiptype' => $fitting->ship->typeName,
+                'fitname' => $fitting->name,
+                'typeID' => $fitting->ship->typeID,
             ];
 
-            if (array_search($fitting->id, $doctrine_fits) !== false) {
+            if (array_search($fitting->fitting_id, $doctrine_fits) !== false) {
                 array_push($selected, $entry);
             } else {
                 array_push($unselected, $entry);
@@ -111,12 +107,12 @@ class FittingController extends Controller implements CalculateConstants
         $fittings = $doctrine->fittings()->get();
 
         foreach ($fittings as $fitting) {
-            $ship = InvType::where('typeName', $fitting->shiptype)->first();
+            $ship = $fitting->ship;
 
             array_push($fitting_list, [
-                'id' => $fitting->id,
-                'name' => $fitting->fitname,
-                'shipType' => $fitting->shiptype,
+                'id' => $fitting->fitting_id,
+                'name' => $fitting->name,
+                'shipType' => $fitting->ship->typeName,
                 'shipImg' => $ship->typeID,
             ]);
         }
@@ -144,7 +140,7 @@ class FittingController extends Controller implements CalculateConstants
         $skillsToons = [];
 
         $fitting = Fitting::find($id);
-        $skillsToons['skills'] = $this->calculate($fitting->eftfitting);
+        $skillsToons['skills'] = $this->calculate($fitting);
         $skilledCharacters = CharacterInfo::with('skills')->whereIn('character_id', auth()->user()->associatedCharacterIds())->get();
 
         foreach ($skilledCharacters as $character) {
@@ -187,7 +183,6 @@ class FittingController extends Controller implements CalculateConstants
     public function getFittingList()
     {
         $fitnames = [];
-        $alliance_corps = [];
 
         $fittings = $this->getFittings();
 
@@ -195,13 +190,11 @@ class FittingController extends Controller implements CalculateConstants
             return $fitnames;
 
         foreach ($fittings as $fit) {
-            $ship = InvType::where('typeName', $fit->shiptype)->first();
-
             array_push($fitnames, [
-                'id' => $fit->id,
-                'shiptype' => $fit->shiptype,
-                'fitname' => $fit->fitname,
-                'typeID' => $ship->typeID,
+                'id' => $fit->fitting_id,
+                'shiptype' => $fit->ship->typeName,
+                'fitname' => $fit->name,
+                'typeID' => $fit->ship_type_id,
             ]);
         }
 
@@ -212,44 +205,45 @@ class FittingController extends Controller implements CalculateConstants
     {
         $fitting = Fitting::find($id);
 
-        return $fitting->eftfitting;
+        return $fitting->toEve();
     }
 
     public function getFittingCostById($id)
     {
         $fit = Fitting::find($id);
+        $provider = setting('cryptatech_seat_fitting_price_provider', true);
+        $items = $fit->fitItems;
+        $ship = new FittingItem();
+        $ship->type_id = $fit->ship_type_id;
+        $ship->quantity = 1;
+        $items->push($ship);
 
         // $eft = implode("\n", $fit->eftfitting);
-        $evepraisal = setting('fitting.evepraisal.domain', true);
+        try {
+            PriceProviderSystem::getPrices($provider,$items);
+        } catch (PriceProviderException $e) {
+            $message = $e->getMessage();
+            return redirect()->back()->with("error", "Failed to get prices from price provider: $message");
+        }
 
-        $response = (new Client())
-            ->request('POST', "https://$evepraisal/appraisal.json?market=jita&persist=no", [
-                'multipart' => [
-                    [
-                        'name' => 'uploadappraisal',
-                        'contents' => $fit->eftfitting,
-                        'filename' => 'notme',
-                        'headers' => [
-                            'Content-Type' => 'text/plain',
-                            'User-Agent' => 'seat-srp',
-                        ],
-                    ],
-                ],
-            ]);
+        $total = $items->sum(function(FittingItem $v){
+            return $v->getPrice();
+        });
 
-        return response()->json(json_decode($response->getBody()->getContents()));
+
+        return response()->json(json_encode(["total" => $total, "ship" => $ship->getPrice()]));
     }
 
     public function getFittingById($id)
     {
         $fitting = Fitting::find($id);
 
-        $response = $this->fittingParser($fitting->eftfitting);
+        $response = $this->fittingParser($fitting);
 
         $response['exportLinks'] = collect(config('fitting.exportlinks'))->map(function ($link) use ($fitting) {
             return [
                 'name' => $link['name'],
-                'url' => isset($link['url']) ? $link['url'] . "?id=$fitting->id" : route($link['route'], ['id' => $fitting->id]),
+                'url' => isset($link['url']) ? $link['url'] . "?id=$fitting->fitting_id" : route($link['route'], ['id' => $fitting->fitting_id]),
             ];
         })->values();
 
@@ -292,13 +286,10 @@ class FittingController extends Controller implements CalculateConstants
         $fitting = new Fitting();
 
         if ($request->fitSelection > 0) {
-            $fitting = Fitting::find($request->fitSelection);
-        }
-
-        $eft = explode("\n", $request->eftfitting);
-        [$fitting->shiptype, $fitting->fitname] = explode(', ', substr($eft[0], 1, -2));
-        $fitting->eftfitting = $request->eftfitting;
-        $fitting->save();
+            $fit = Fitting::createFromEve($request->eftfitting, $request->fitSelection);
+        } else {
+            $fit = Fitting::createFromEve($request->eftfitting);
+        }        
 
         $fitlist = $this->getFittingList();
 
@@ -312,100 +303,38 @@ class FittingController extends Controller implements CalculateConstants
         return response()->json($this->fittingParser($eft));
     }
 
-    private function fittingParser($eft)
+    private function fittingParser($fit)
     {
         $jsfit = [];
-        $data = preg_split("/\r?\n\r?\n/", $eft);
-        $jsfit['eft'] = $eft;
 
-        $header = preg_split("/\r?\n/", $data[0]);
+        $jsfit['eft'] = $fit->toEve();
+        $jsfit['shipname'] = $fit->ship->typeName;
+        $jsfit['fitname'] = $fit->name;
+        $jsfit['dronebay'] = []; // Lets load fighters in here too xD
+        foreach ($fit->items as $ls) {
+            
+            switch ($ls->flag){
+                case Fitting::BAY_DRONE:
+                case Fitting::BAY_FIGHTER:
+                    if (isset($jsfit['dronebay'][$ls->type_id])){
+                        $jsfit['dronebay'][$ls->type_id]['qty'] += $ls->quantity;
+                    } else {
+                        $jsfit['dronebay'][$ls->type_id] = ['qty' => $ls->quantity, 'name' => $ls->type->typeName];
+                    }
+                    break;
 
-        [$jsfit['shipname'], $jsfit['fitname']] = explode(',', substr($header[0], 1, -1));
-        array_shift($header);
-        $data[0] = implode("\r\n", $header);
+                case Fitting::BAY_CARGO: // Not included in the JS response :)
+                    break;
 
-        // Deal with a blank line between the name and the first low slot
-        $lowslot = array_filter(preg_split("/\r?\n/", $data[0]));
-        if (empty($lowslot)) {
-            $data = array_splice($data, 1, count($data));
-        }
-
-        $lowslot = array_filter(preg_split("/\r?\n/", $data[0]));
-        $midslot = array_filter(preg_split("/\r?\n/", $data[1]));
-        $highslot = array_filter(preg_split("/\r?\n/", $data[2]));
-        $rigs = array_filter(preg_split("/\r?\n/", $data[3]));
-
-        // init drones array
-        if (count($data) > 4) {
-            //Deal with extra blank line between rigs and drones
-            $drones = array_filter(preg_split("/\r?\n/", $data[4]));
-            if (empty($drones)) {
-                $data = array_splice($data, 1, count($data));
-                $drones = array_filter(preg_split("/\r?\n/", $data[4]));
+                default:
+                    $jsfit[$ls->invFlag->flagName] = ['id' => $ls->type_id, 'name' => $ls->type->typeName];
+                    break;
             }
+            
         }
-
-        // special case for tech 3 cruiser which may have sub-modules
-        if (in_array($jsfit['shipname'], ['Tengu', 'Loki', 'Legion', 'Proteus'])) {
-
-            $subslot = array_filter(preg_split("/\r?\n/", $data[4]));
-
-            // bump drones to index 5
-            $drones = [];
-            if (count($data) > 5) {
-                $drones = array_filter(preg_split("/\r?\n/", $data[5]));
-            }
-        }
-
-        $this->loadSlot($jsfit, 'LoSlot', $lowslot);
-        $this->loadSlot($jsfit, 'MedSlot', $midslot);
-        $this->loadSlot($jsfit, 'HiSlot', $highslot);
-
-        if (isset($subslot)) {
-            $this->loadSlot($jsfit, 'SubSlot', $subslot);
-        }
-
-        $this->loadSlot($jsfit, 'RigSlot', $rigs);
-
-        if (isset($drones)) {
-            foreach ($drones as $slot) {
-                [$drone, $qty] = explode(' x', $slot);
-                $item = InvType::where('typeName', $drone)->first();
-
-                $jsfit['dronebay'][$item->typeID] = [
-                    'name' => $drone,
-                    'qty' => $qty,
-                ];
-            }
-        }
-
         return $jsfit;
     }
 
-    private function loadSlot(&$jsfit, $slotname, $slots)
-    {
-        $index = 0;
-
-        foreach ($slots as $slot) {
-            $module = explode(',', $slot);
-
-            if (! preg_match("/\[Empty .+ slot\]/", $module[0])) {
-                $item = InvType::where('typeName', $module[0])->first();
-
-                if (empty($item)) {
-                    continue;
-                }
-
-                $jsfit[$slotname . $index] = [
-                    'id' => $item->typeID,
-                    'name' => $module[0],
-                ];
-
-                $index++;
-            }
-        }
-
-    }
 
     public function postSkills(FittingValidation $request)
     {
@@ -473,11 +402,6 @@ class FittingController extends Controller implements CalculateConstants
         return $skills;
     }
 
-    public function getRoleList()
-    {
-        return Role::all();
-    }
-
     public function saveDoctrine(DoctrineValidation $request)
     {
         $doctrine = new Doctrine();
@@ -505,7 +429,7 @@ class FittingController extends Controller implements CalculateConstants
         $allids = [];
 
         foreach ($corps as $corp) {
-            if (! is_null($corp->alliance_id)) {
+            if (!is_null($corp->alliance_id)) {
                 array_push($allids, $corp->alliance_id);
             }
         }
@@ -548,23 +472,23 @@ class FittingController extends Controller implements CalculateConstants
         }
 
         foreach ($fittings as $fitting) {
-            $fit = Fitting::find($fitting->id);
+            $fit = Fitting::find($fitting->fitting_id);
 
-            array_push($data['fittings'], $fit->fitname);
+            array_push($data['fittings'], $fit->name);
 
             $this->requiredSkills = [];
-            $shipSkills = $this->calculate('[' . $fit->shiptype . ', a]');
+            $shipSkills = $this->calculateIndividual($fit->ship_type_id);
 
             foreach ($shipSkills as $shipSkill) {
-                $fitData[$fitting->id]['shipskills'][$shipSkill['typeId']] = $shipSkill['level'];
+                $fitData[$fitting->fitting_id]['shipskills'][$shipSkill['typeId']] = $shipSkill['level'];
             }
 
             $this->requiredSkills = [];
-            $fitSkills = $this->calculate($fit->eftfitting);
-            $fitData[$fitting->id]['name'] = $fit->fitname;
+            $fitSkills = $this->calculate($fit);
+            $fitData[$fitting->fitting_id]['name'] = $fit->name;
 
             foreach ($fitSkills as $fitSkill) {
-                $fitData[$fitting->id]['skills'][$fitSkill['typeId']] = $fitSkill['level'];
+                $fitData[$fitting->fitting_id]['skills'][$fitSkill['typeId']] = $fitSkill['level'];
             }
         }
 
@@ -594,10 +518,10 @@ class FittingController extends Controller implements CalculateConstants
                     }
                 }
 
-                if (! isset($data['totals'][$fit['name']]['ship'])) {
+                if (!isset($data['totals'][$fit['name']]['ship'])) {
                     $data['totals'][$fit['name']]['ship'] = 0;
                 }
-                if (! isset($data['totals'][$fit['name']]['fit'])) {
+                if (!isset($data['totals'][$fit['name']]['fit'])) {
                     $data['totals'][$fit['name']]['fit'] = 0;
                 }
 
