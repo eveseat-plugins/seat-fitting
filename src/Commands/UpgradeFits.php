@@ -6,7 +6,9 @@ namespace CryptaTech\Seat\Fitting\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use CryptaTech\Seat\Fitting\Models\Fitting;
+use CryptaTech\Seat\Fitting\Models\Doctrine;
 use CryptaTech\Seat\Fitting\Models\OldFitting;
+use CryptaTech\Seat\Fitting\Models\OldDoctrine;
 use Exception;
 
 /**
@@ -47,9 +49,12 @@ class UpgradeFits extends Command
         $bar = $this->getProgressBar($c);
         $failedUpgrades = 0;
 
+        $mapping = [];
+
         foreach ($oldFits as $oldFit) {
             try { // If a fit fails then we just add it to a list of errors.
-                Fitting::createFromEve($oldFit->eftfitting);
+                $f = Fitting::createFromEve($oldFit->eftfitting);
+                $mapping[$oldFit->id] = $f->fitting_id;
             } catch (Exception $e) {
                 Log::error(['fit' => $oldFit->eftfitting, 'error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
                 $failedUpgrades += 1;
@@ -63,6 +68,30 @@ class UpgradeFits extends Command
         $this->info('Fitting Migration Complete!');
         $this->info('Success: ' . $c - $failedUpgrades);
         $this->warn('Failure : ' . $failedUpgrades);
+
+        $this->line('');
+
+
+        $this->info("Updating Doctrine Fitting Mapping!");
+        $oldDocs = OldDoctrine::all();
+        $bar = $this->getProgressBar(count($oldDocs));
+
+        foreach( $oldDocs as $oldDoc){
+            $newDoc = Doctrine::create([
+                'name' => $oldDoc->name,
+            ]);
+            foreach ($oldDoc->fittings()->get() as $oldFit) {
+                $newDoc->fittings()->attach($mapping[$oldFit->id]);
+            }
+            $bar->advance();
+            
+        }
+        
+        $bar->finish();
+        $this->line('');
+
+        $this->info('Doctrine Migration Complete!');
+        
     }
 
 
