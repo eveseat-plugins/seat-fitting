@@ -48,7 +48,7 @@ class FittingHelper
         ];
 
         foreach ($items as $item) {
-            $result['total'] += $item->price * $item->getAmount();
+            $result['total'] += $item->price;
             $result['volume'] += $item->typeModel->volume * $item->getAmount();
         }
 
