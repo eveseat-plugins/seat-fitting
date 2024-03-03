@@ -35,7 +35,8 @@
              @if (count($fitlist) > 0)
              @foreach($fitlist as $fit)
              <tr class="fitid" data-id="{{ $fit['id'] }}">
-                 <td><img src='https://image.eveonline.com/Type/{{ $fit['typeID'] }}_32.png' height='24' /></td>
+                <!-- https://images.evetech.net/types/12005/icon?size=64 -->
+                 <td><img src='https://images.evetech.net/types/{{ $fit['typeID'] }}/icon?size=32' height='24' /></td>
                  <td>{{ $fit['shiptype'] }}</td>
                  <td>{{ $fit['fitname'] }}</td>
                  <td class="no-hover pull-right" style="min-width:80px">
