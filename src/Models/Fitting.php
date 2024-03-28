@@ -348,6 +348,9 @@ class Fitting extends Model
             }
         }
 
+        // laravel caches relations, meaning that with the way we add items to the fitting, the cache isn't invalidated automatically
+        $fit->unsetRelations();
+
         return $fit;
     }
 }

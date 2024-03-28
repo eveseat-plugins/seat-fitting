@@ -2,6 +2,7 @@
 
 namespace CryptaTech\Seat\Fitting\Http\Controllers;
 
+use CryptaTech\Seat\Fitting\Events\FittingUpdated;
 use CryptaTech\Seat\Fitting\Helpers\CalculateConstants;
 use CryptaTech\Seat\Fitting\Helpers\CalculateEft;
 use CryptaTech\Seat\Fitting\Models\Doctrine;
@@ -289,7 +290,10 @@ class FittingController extends Controller implements CalculateConstants
             $fit = Fitting::createFromEve($request->eftfitting, $request->fitSelection);
         } else {
             $fit = Fitting::createFromEve($request->eftfitting);
-        }        
+        }
+
+        // dispatch an event so other plugins know that a fitting has updated
+        FittingUpdated::dispatch($fit);
 
         $fitlist = $this->getFittingList();
 
