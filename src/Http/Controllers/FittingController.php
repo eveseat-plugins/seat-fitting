@@ -2,6 +2,7 @@
 
 namespace CryptaTech\Seat\Fitting\Http\Controllers;
 
+use CryptaTech\Seat\Fitting\Events\DoctrineUpdated;
 use CryptaTech\Seat\Fitting\Events\FittingUpdated;
 use CryptaTech\Seat\Fitting\Helpers\CalculateConstants;
 use CryptaTech\Seat\Fitting\Helpers\CalculateEft;
@@ -420,6 +421,8 @@ class FittingController extends Controller implements CalculateConstants
         foreach ($request->selectedFits as $fitId) {
             $doctrine->fittings()->sync($request->selectedFits);
         }
+
+        DoctrineUpdated::dispatch($doctrine);
 
         return redirect()->route('cryptafitting::doctrineview');
     }
