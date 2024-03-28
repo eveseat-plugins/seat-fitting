@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- namespace CryptaTech\Seat\Fitting\Models;
+namespace CryptaTech\Seat\Fitting\Models;
 
 use CryptaTech\Seat\Fitting\Models\Sde\InvFlag;
 use Illuminate\Database\Eloquent\Model;

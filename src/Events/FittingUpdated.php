@@ -13,7 +13,7 @@ class FittingUpdated
     public Fitting $fitting;
 
     /**
-     * @param Fitting $fitting
+     * @param  Fitting  $fitting
      */
     public function __construct(Fitting $fitting)
     {

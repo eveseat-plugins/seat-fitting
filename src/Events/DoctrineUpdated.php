@@ -13,7 +13,7 @@ class DoctrineUpdated
     public Doctrine $doctrine;
 
     /**
-     * @param Doctrine $doctrine
+     * @param  Doctrine  $doctrine
      */
     public function __construct(Doctrine $doctrine)
     {
