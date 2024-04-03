@@ -25,7 +25,6 @@ namespace CryptaTech\Seat\Fitting\Models;
 use CryptaTech\Seat\Fitting\Models\Sde\InvFlag;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Services\Contracts\HasTypeID;
 use Seat\Services\Contracts\HasTypeIDWithAmount;
 use Seat\Services\Contracts\IPriceable;
 
@@ -34,7 +33,7 @@ use Seat\Services\Contracts\IPriceable;
  *
  * @package CryptaTech\Seat\Fitting\Models
  */
-class FittingItem extends Model implements HasTypeID, HasTypeIDWithAmount, IPriceable
+class FittingItem extends Model implements HasTypeIDWithAmount, IPriceable
 {
     /**
      * @var bool
