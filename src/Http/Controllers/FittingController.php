@@ -2,6 +2,8 @@
 
 namespace CryptaTech\Seat\Fitting\Http\Controllers;
 
+use CryptaTech\Seat\Fitting\Events\DoctrineUpdated;
+use CryptaTech\Seat\Fitting\Events\FittingUpdated;
 use CryptaTech\Seat\Fitting\Helpers\CalculateConstants;
 use CryptaTech\Seat\Fitting\Helpers\CalculateEft;
 use CryptaTech\Seat\Fitting\Models\Doctrine;
@@ -11,6 +13,7 @@ use CryptaTech\Seat\Fitting\Validation\DoctrineValidation;
 use CryptaTech\Seat\Fitting\Validation\FittingValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use RecursiveTree\Seat\PricesCore\Facades\PriceProviderSystem;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
@@ -18,7 +21,6 @@ use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Web\Http\Controllers\Controller;
-use RecursiveTree\Seat\PricesCore\Facades\PriceProviderSystem;
 
 class FittingController extends Controller implements CalculateConstants
 {
@@ -29,6 +31,7 @@ class FittingController extends Controller implements CalculateConstants
     public function getSettings()
     {
         $provider = setting('cryptatech_seat_fitting_price_provider', true);
+
         return view('fitting::settings', compact(['provider']));
     }
 
@@ -36,10 +39,10 @@ class FittingController extends Controller implements CalculateConstants
     {
 
         $request->validate([
-            "price_source" => "required|integer"
+            'price_source' => 'required|integer',
         ]);
 
-        setting(["cryptatech_seat_fitting_price_provider", $request->price_source], true);
+        setting(['cryptatech_seat_fitting_price_provider', $request->price_source], true);
 
         return redirect()->back()->with('success', 'Updated settings');
     }
@@ -220,18 +223,18 @@ class FittingController extends Controller implements CalculateConstants
 
         // $eft = implode("\n", $fit->eftfitting);
         try {
-            PriceProviderSystem::getPrices($provider,$items);
+            PriceProviderSystem::getPrices($provider, $items);
         } catch (PriceProviderException $e) {
             $message = $e->getMessage();
-            return redirect()->back()->with("error", "Failed to get prices from price provider: $message");
+
+            return redirect()->back()->with('error', "Failed to get prices from price provider: $message");
         }
 
-        $total = $items->sum(function(FittingItem $v){
+        $total = $items->sum(function (FittingItem $v) {
             return $v->getPrice();
         });
 
-
-        return response()->json(json_encode(["total" => $total, "ship" => $ship->getPrice()]));
+        return response()->json(json_encode(['total' => $total, 'ship' => $ship->getPrice()]));
     }
 
     public function getFittingById($id)
@@ -289,7 +292,10 @@ class FittingController extends Controller implements CalculateConstants
             $fit = Fitting::createFromEve($request->eftfitting, $request->fitSelection);
         } else {
             $fit = Fitting::createFromEve($request->eftfitting);
-        }        
+        }
+
+        // dispatch an event so other plugins know that a fitting has updated
+        FittingUpdated::dispatch($fit);
 
         $fitlist = $this->getFittingList();
 
@@ -312,7 +318,7 @@ class FittingController extends Controller implements CalculateConstants
         $jsfit['fitname'] = $fit->name;
         $jsfit['dronebay'] = []; // Lets load fighters in here too xD
         foreach ($fit->items as $ls) {
-            
+
             switch ($ls->flag){
                 case Fitting::BAY_DRONE:
                 case Fitting::BAY_FIGHTER:
@@ -330,11 +336,11 @@ class FittingController extends Controller implements CalculateConstants
                     $jsfit[$ls->invFlag->flagName] = ['id' => $ls->type_id, 'name' => $ls->type->typeName];
                     break;
             }
-            
+
         }
+
         return $jsfit;
     }
-
 
     public function postSkills(FittingValidation $request)
     {
@@ -417,6 +423,8 @@ class FittingController extends Controller implements CalculateConstants
             $doctrine->fittings()->sync($request->selectedFits);
         }
 
+        DoctrineUpdated::dispatch($doctrine);
+
         return redirect()->route('cryptafitting::doctrineview');
     }
 
@@ -429,7 +437,7 @@ class FittingController extends Controller implements CalculateConstants
         $allids = [];
 
         foreach ($corps as $corp) {
-            if (!is_null($corp->alliance_id)) {
+            if (! is_null($corp->alliance_id)) {
                 array_push($allids, $corp->alliance_id);
             }
         }
@@ -518,10 +526,10 @@ class FittingController extends Controller implements CalculateConstants
                     }
                 }
 
-                if (!isset($data['totals'][$fit['name']]['ship'])) {
+                if (! isset($data['totals'][$fit['name']]['ship'])) {
                     $data['totals'][$fit['name']]['ship'] = 0;
                 }
-                if (!isset($data['totals'][$fit['name']]['fit'])) {
+                if (! isset($data['totals'][$fit['name']]['fit'])) {
                     $data['totals'][$fit['name']]['fit'] = 0;
                 }
 

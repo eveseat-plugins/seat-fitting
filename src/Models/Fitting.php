@@ -22,11 +22,10 @@
 
 namespace CryptaTech\Seat\Fitting\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use CryptaTech\Seat\Fitting\Models\FittingItem;
 use CryptaTech\Seat\Fitting\Models\Sde\DgmTypeEffect;
+use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class Fitting.
@@ -48,7 +47,6 @@ class Fitting extends Model
     const BAY_CARGO = 5;
     const IMPLANT = 89;
     const SKILL = 7;
-
 
     public $timestamps = true;
 
@@ -254,7 +252,7 @@ class Fitting extends Model
     /**
      * @return Fitting
      */
-    public static function createFromEve(string $eft, int $existing_id=null): Fitting
+    public static function createFromEve(string $eft, int $existing_id = null): Fitting
     {
 
         // Normalise all the line endings to \n
@@ -280,12 +278,10 @@ class Fitting extends Model
         $fit->ship_type_id = $ship->typeID;
 
         $fit->save();
-        
 
         // This is our current parser state
         $state = STATE::LOWS;
         // $state = STATE::from($state->value +1); <-- Used to increment states
-
 
         $index = 0;
         foreach ($data as $line) {
@@ -299,7 +295,7 @@ class Fitting extends Model
 
             // Here is where we update our state machine to the next state if required.
             $solved = false;
-            while (!$solved && ($state != $state->nextState())) {
+            while (! $solved && ($state != $state->nextState())) {
                 if ($state->validInvType($module)) {
                     $solved = true;
                 } else {
@@ -313,7 +309,7 @@ class Fitting extends Model
                 'fitting_id' => $fit->fitting_id,
                 'type_id' => $module->typeID,
                 'flag' => $state->getFlag($index),
-                'quantity' => isset($modu[1]) ? $modu[1] : 1
+                'quantity' => isset($modu[1]) ? $modu[1] : 1,
             ]);
             $index += 1;
 
@@ -322,7 +318,7 @@ class Fitting extends Model
                 // we have something split for qty
                 $chg = explode(' x', trim($mod[1]));
                 $charge = InvType::where('typeName', $chg[0])->first();
-                if (!empty($charge)) {
+                if (! empty($charge)) {
                     FittingItem::create([
                         'fitting_id' => $fit->fitting_id,
                         'type_id' => $charge->typeID,
@@ -334,7 +330,7 @@ class Fitting extends Model
         }
 
         // Now, if this is a ship that has a fighter bay, do a pass back over and move fighters from cargo to the fighter bay.
-        // There is probably more efficient ways to do this all in the DB in one update, but cbf as it wont run often. 
+        // There is probably more efficient ways to do this all in the DB in one update, but cbf as it wont run often.
         // Though may be more of an issue if people depend on observers....... But this whole serial approach falls apart then anyway.
         $fighterHangarCapacity = DgmTypeAttribute::where('typeID', $fit->ship_type_id)->where('attributeID', 2055)->value('valueFloat');
         if ($fighterHangarCapacity) {
@@ -347,6 +343,9 @@ class Fitting extends Model
                 }
             }
         }
+
+        // laravel caches relations, meaning that with the way we add items to the fitting, the cache isn't invalidated automatically
+        $fit->unsetRelations();
 
         return $fit;
     }
@@ -366,7 +365,7 @@ class Fitting extends Model
  *    Now the hard one.... Fighters... I think that because cargo is the catch all and last.. I need to do a pass later
  *      that for all ships with fighter bays, these get moved from cargo to the fighter bay.
  *    NOT DOING VOLUME CHECKS!
- * 
+ *
  *  So how am I goign to parse this mess... Well its not technically correct but a state machine
  *  We know the header is first so that is easy.
  *  From there I am going to ignore blank lines (HEATHEN!) and populate slots in order from top to bottom based on the order they appear
@@ -374,7 +373,6 @@ class Fitting extends Model
  *  Then if all the slots (not based on hull but max possible) are full then we assume its in cargo. (ie 4 Rigs means 3 fit and 1 in cargo)
  *  Charges in weapons are automatically loaded into cargo
  */
-
 enum STATE: int
 {
     case LOWS = 1;

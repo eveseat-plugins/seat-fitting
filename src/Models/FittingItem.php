@@ -20,12 +20,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- namespace CryptaTech\Seat\Fitting\Models;
+namespace CryptaTech\Seat\Fitting\Models;
 
 use CryptaTech\Seat\Fitting\Models\Sde\InvFlag;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Contracts\HasTypeIDWithAmount;
 use Seat\Services\Contracts\IPriceable;
 
 /**
@@ -33,7 +33,7 @@ use Seat\Services\Contracts\IPriceable;
  *
  * @package CryptaTech\Seat\Fitting\Models
  */
-class FittingItem extends Model implements HasTypeID, IPriceable
+class FittingItem extends Model implements HasTypeIDWithAmount, IPriceable
 {
     /**
      * @var bool
