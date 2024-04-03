@@ -2,8 +2,8 @@
 
 namespace CryptaTech\Seat\Fitting;
 
-use Seat\Services\AbstractSeatPlugin;
 use CryptaTech\Seat\Fitting\Commands\UpgradeFits;
+use Seat\Services\AbstractSeatPlugin;
 
 class FittingServiceProvider extends AbstractSeatPlugin
 {
@@ -21,7 +21,7 @@ class FittingServiceProvider extends AbstractSeatPlugin
 
         $this->publishes(
             [
-                __DIR__ . '/Config/fitting.exportlinks.php' => config_path('fitting.exportlinks.php')
+                __DIR__ . '/Config/fitting.exportlinks.php' => config_path('fitting.exportlinks.php'),
             ],
             ['config', 'seat']
         );
@@ -36,7 +36,7 @@ class FittingServiceProvider extends AbstractSeatPlugin
      */
     public function add_routes()
     {
-        if (!$this->app->routesAreCached()) {
+        if (! $this->app->routesAreCached()) {
             include __DIR__ . '/Http/routes.php';
         }
     }

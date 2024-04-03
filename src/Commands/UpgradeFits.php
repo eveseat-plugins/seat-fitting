@@ -1,15 +1,14 @@
 <?php
 
-
 namespace CryptaTech\Seat\Fitting\Commands;
 
+use CryptaTech\Seat\Fitting\Models\Doctrine;
+use CryptaTech\Seat\Fitting\Models\Fitting;
+use CryptaTech\Seat\Fitting\Models\OldDoctrine;
+use CryptaTech\Seat\Fitting\Models\OldFitting;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use CryptaTech\Seat\Fitting\Models\Fitting;
-use CryptaTech\Seat\Fitting\Models\Doctrine;
-use CryptaTech\Seat\Fitting\Models\OldFitting;
-use CryptaTech\Seat\Fitting\Models\OldDoctrine;
-use Exception;
 
 /**
  * Class UpgradeFits.
@@ -39,12 +38,12 @@ class UpgradeFits extends Command
     public function handle()
     {
 
-        $this->info("Finding fits to upgrade!");
+        $this->info('Finding fits to upgrade!');
 
         $oldFits = OldFitting::all();
         $c = count($oldFits);
 
-        $this->info("Found " . $c . " fits to process");
+        $this->info('Found ' . $c . ' fits to process');
 
         $bar = $this->getProgressBar($c);
         $failedUpgrades = 0;
@@ -71,12 +70,11 @@ class UpgradeFits extends Command
 
         $this->line('');
 
-
-        $this->info("Updating Doctrine Fitting Mapping!");
+        $this->info('Updating Doctrine Fitting Mapping!');
         $oldDocs = OldDoctrine::all();
         $bar = $this->getProgressBar(count($oldDocs));
 
-        foreach( $oldDocs as $oldDoc){
+        foreach($oldDocs as $oldDoc){
             $newDoc = Doctrine::create([
                 'name' => $oldDoc->name,
             ]);
@@ -84,16 +82,15 @@ class UpgradeFits extends Command
                 $newDoc->fittings()->attach($mapping[$oldFit->id]);
             }
             $bar->advance();
-            
+
         }
-        
+
         $bar->finish();
         $this->line('');
 
         $this->info('Doctrine Migration Complete!');
-        
-    }
 
+    }
 
     /**
      * Get a new progress bar to display based on the

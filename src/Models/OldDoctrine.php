@@ -16,5 +16,4 @@ class OldDoctrine extends Model
     {
         return $this->belongsToMany(OldFitting::class, 'seat_doctrine_fitting', 'doctrine_id', 'fitting_id');
     }
-
 }
