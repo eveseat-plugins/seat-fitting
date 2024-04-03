@@ -225,7 +225,7 @@ class Fitting extends Model
             PHP_EOL . PHP_EOL .
 
             $this->rig_slots->map(function ($slot) {
-                return s$slot->type->typeName;
+                return $slot->type->typeName;
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL .
