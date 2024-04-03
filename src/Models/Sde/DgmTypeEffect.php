@@ -1,6 +1,5 @@
 <?php
 
-
 namespace CryptaTech\Seat\Fitting\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +7,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class DgmEffect
+ * Class DgmEffect.
  *
  * @package CryptaTech\Seat\Fitting\Models\Sde
  */

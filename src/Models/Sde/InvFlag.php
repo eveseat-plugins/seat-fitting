@@ -1,6 +1,5 @@
 <?php
 
-
 namespace CryptaTech\Seat\Fitting\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;

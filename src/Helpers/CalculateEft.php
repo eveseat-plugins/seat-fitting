@@ -2,14 +2,13 @@
 
 namespace CryptaTech\Seat\Fitting\Helpers;
 
+use CryptaTech\Seat\Fitting\Models\FittingItem;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvType;
 
-use CryptaTech\Seat\Fitting\Models\FittingItem;
-
 // There are some large performance gains to be had in this file... Simply through letting the DB do all the work for us.
 // However until such a time that pepole complain about speed, or I get bored, I will not be updating this.
-// The one exception is probably the Doctrine Report is too slow... Anyways.. 
+// The one exception is probably the Doctrine Report is too slow... Anyways..
 
 // Also need to replace the dogma section.
 
@@ -24,7 +23,7 @@ trait CalculateEft
     public function calculate($fitting)
     {
         $items = collect($fitting->fitItems->all());
-        $types = $items->map(function (FittingItem $v, $k){
+        $types = $items->map(function (FittingItem $v, $k) {
             return $v->type_id;
         })->unique();
         $this->getReqSkillsByTypeIDs($types);
@@ -36,7 +35,7 @@ trait CalculateEft
     public function calculateIndividual(int $typeID)
     {
         $this->getReqSkillsByTypeIDs([$typeID]);
-        
+
         return $this->getSkillNames($this->requiredSkills);
     }
 
@@ -124,7 +123,7 @@ trait CalculateEft
         $attributeids = array_merge(array_keys(self::REQ_SKILLS_ATTR_LEVELS), array_values(self::REQ_SKILLS_ATTR_LEVELS));
 
         foreach ($typeIDs as $type) {
-            if (gettype($type) == "array")
+            if (gettype($type) == 'array')
                 $type = $type['typeID'];
             $res = DgmTypeAttribute::where('typeid', $type)->wherein('attributeID', $attributeids)->get();
 
