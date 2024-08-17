@@ -282,11 +282,14 @@ class FittingController extends Controller implements CalculateConstants
         return view('fitting::fitting', ['fitlist' => $fitlist, 'corps' => $corps]);
     }
 
-    public function getDoctrineView()
+    public function getDoctrineView($id = null)
     {
         $doctrine_list = $this->getDoctrineList();
 
-        return view('fitting::doctrine', ['doctrine_list' => $doctrine_list]);
+        return view('fitting::doctrine', [
+            'doctrine_list' => $doctrine_list,
+            'doctrine_id' => $id
+        ]);
     }
 
     public function getAboutView()
@@ -531,15 +534,14 @@ class FittingController extends Controller implements CalculateConstants
         $characters = collect();
 
         if ($alliance_id !== '0') {
-
             $chars = CharacterInfo::with('skills')->whereHas('affiliation', function ($affiliation) use ($alliance_id): void {
                 $affiliation->where('alliance_id', $alliance_id);
-            })->get();
+            })->orderBy('name')->get();
             $characters = $characters->concat($chars);
         } else {
             $characters = CharacterInfo::with('skills')->whereHas('affiliation', function ($affiliation) use ($corp_id): void {
                 $affiliation->where('corporation_id', $corp_id);
-            })->get();
+            })->orderBy('name')->get();
         }
 
 

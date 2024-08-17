@@ -28,7 +28,12 @@
                     <select id="doctrineSpinner" class="form-control mr-3">
                         <option value="0">{{trans('fitting::doctrine.select_doctrine_option')}}</option>
                         @foreach ($doctrine_list as $doctrine)
-                            <option value="{{ $doctrine['id'] }}">{{ $doctrine['name'] }}</option>
+                            <option
+                                    value="{{ $doctrine['id'] }}"
+                                    @if($doctrine_id == $doctrine['id']) selected @endif
+                            >
+                                {{ $doctrine['name'] }}
+                            </option>
                         @endforeach
                     </select>
                     <div class="input-group-btn">
@@ -133,9 +138,7 @@
             });
         });
 
-        $('#doctrineSpinner').change(function () {
-            const id = $('#doctrineSpinner').find(":selected").val();
-
+        function changeDoctrine(id) {
             if (id > 0) {
                 $('button#editDoctrine').prop('disabled', false);
                 $('button#deleteDoctrine').prop('disabled', false);
@@ -166,6 +169,17 @@
                 $('button#editDoctrine').prop('disabled', true);
                 $('button#deleteDoctrine').prop('disabled', true);
             }
+        }
+
+        let initialId = $('#doctrineSpinner').val();
+
+        if (initialId) {
+            changeDoctrine(initialId);
+        }
+
+        $('#doctrineSpinner').change(function () {
+            const id = $('#doctrineSpinner').find(":selected").val();
+            changeDoctrine(id);
         });
 
         $('#newDoctrine').on('click', function () {

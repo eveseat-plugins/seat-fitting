@@ -66,7 +66,6 @@ function fillSkills(result) {
             let rank = character.skill[skill.typeId].rank;
 
             let graphbox = drawLevelBox(skill.level, charskilllvl, skill.typeName, rank);
-            console.log(graphbox);
             $('#skillbody').append(graphbox);
         }
     }
@@ -76,8 +75,6 @@ function drawLevelBox(neededLevel, currentLevel, skillName, rank) {
     let trainingtime = '';
     let row = '';
     let pointdiff = 0;
-
-    console.log(neededLevel, currentLevel, skillName, rank);
 
     if (currentLevel === 0) {
         row = '<tr class="bg-red">';
