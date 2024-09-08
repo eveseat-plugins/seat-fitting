@@ -12,13 +12,17 @@ In your seat directory (By default:  /var/www/seat), type the following:
 
 ```
 php artisan down
-composer require denngarr/seat-fitting
+composer require cryptatech/seat-fitting
 
 php artisan vendor:publish --force --all
 php artisan migrate
 
 php artisan up
 ```
+
+If  using a docker installation see https://eveseat.github.io/docs/admin_guides/docker_admin/#installing-plugins
+
+Use the package name `cryptatech/seat-fitting`
 
 And now, when you log into 'Seat', you should see a 'Fittings' link on the left.
 
