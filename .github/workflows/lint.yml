@@ -9,8 +9,25 @@ jobs:
       fail-fast: true
       matrix:
         php: [8.3]
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
  
     steps:
+
+      - name: Rector Cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/rector
+          key: ${{ runner.os }}-rector-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-rector-
+
+      - run: mkdir -p /tmp/rector
+
+      - name: Rector Dry Run
+        run: php vendor/bin/rector process --dry-run --config=rector.php
+
       - name: Checkout code
         uses: actions/checkout@v4
  
