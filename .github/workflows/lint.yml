@@ -13,18 +13,7 @@ jobs:
       # Give the default GITHUB_TOKEN write permission to commit and push the
       # added or changed files to the repository.
       contents: write
- 
     steps:
-
-      - name: Rector Cache
-        uses: actions/cache@v4
-        with:
-          path: /tmp/rector
-          key: ${{ runner.os }}-rector-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-rector-
-
-      - run: mkdir -p /tmp/rector
-
       - name: Checkout code
         uses: actions/checkout@v4
  
@@ -35,14 +24,11 @@ jobs:
           extensions: json, dom, curl, libxml, mbstring
           coverage: none
  
-      - name: Install Packages
-        run: composer update --dev
-
-      - name: Rector Dry Run
-        run: vendor/bin/rector process --dry-run --config=rector.php
-
+      - name: Install Pint
+        run: composer global require laravel/pint
+ 
       - name: Run Pint
-        run: vendor/bin/pint
+        run: pint
  
       - name: Commit linted files
         uses: stefanzweifel/git-auto-commit-action@v5
