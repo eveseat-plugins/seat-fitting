@@ -31,6 +31,8 @@
         "eveseat/eveapi": "^5.0",
         "eveseat/web": "^5.0",
         "recursivetree/seat-prices-core": "^1.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.18"
     }
 }
-

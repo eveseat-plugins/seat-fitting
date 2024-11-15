@@ -7,8 +7,6 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class InvFlag.
- *
- * @package CryptaTech\Seat\Fitting\Models\Sde
  */
 class InvFlag extends Model
 {
@@ -33,5 +31,4 @@ class InvFlag extends Model
      * @var bool
      */
     public $timestamps = false;
-
 }

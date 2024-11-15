@@ -189,8 +189,9 @@ class FittingController extends Controller implements CalculateConstants
 
         $fittings = $this->getFittings();
 
-        if (count($fittings) <= 0)
+        if (count($fittings) <= 0) {
             return $fitnames;
+        }
 
         foreach ($fittings as $fit) {
             array_push($fitnames, [
@@ -216,7 +217,7 @@ class FittingController extends Controller implements CalculateConstants
         $fit = Fitting::find($id);
         $provider = setting('cryptatech_seat_fitting_price_provider', true);
         $items = $fit->fitItems;
-        $ship = new FittingItem();
+        $ship = new FittingItem;
         $ship->type_id = $fit->ship_type_id;
         $ship->quantity = 1;
         $items->push($ship);
@@ -246,7 +247,7 @@ class FittingController extends Controller implements CalculateConstants
         $response['exportLinks'] = collect(config('fitting.exportlinks'))->map(function ($link) use ($fitting) {
             return [
                 'name' => $link['name'],
-                'url' => isset($link['url']) ? $link['url'] . "?id=$fitting->fitting_id" : route($link['route'], ['id' => $fitting->fitting_id]),
+                'url' => isset($link['url']) ? $link['url']."?id=$fitting->fitting_id" : route($link['route'], ['id' => $fitting->fitting_id]),
             ];
         })->values();
 
@@ -286,7 +287,7 @@ class FittingController extends Controller implements CalculateConstants
 
     public function saveFitting(FittingValidation $request)
     {
-        $fitting = new Fitting();
+        $fitting = new Fitting;
 
         if ($request->fitSelection > 0) {
             $fit = Fitting::createFromEve($request->eftfitting, $request->fitSelection);
@@ -319,10 +320,10 @@ class FittingController extends Controller implements CalculateConstants
         $jsfit['dronebay'] = []; // Lets load fighters in here too xD
         foreach ($fit->items as $ls) {
 
-            switch ($ls->flag){
+            switch ($ls->flag) {
                 case Fitting::BAY_DRONE:
                 case Fitting::BAY_FIGHTER:
-                    if (isset($jsfit['dronebay'][$ls->type_id])){
+                    if (isset($jsfit['dronebay'][$ls->type_id])) {
                         $jsfit['dronebay'][$ls->type_id]['qty'] += $ls->quantity;
                     } else {
                         $jsfit['dronebay'][$ls->type_id] = ['qty' => $ls->quantity, 'name' => $ls->type->typeName];
@@ -410,7 +411,7 @@ class FittingController extends Controller implements CalculateConstants
 
     public function saveDoctrine(DoctrineValidation $request)
     {
-        $doctrine = new Doctrine();
+        $doctrine = new Doctrine;
 
         if ($request->doctrineid > 0) {
             $doctrine = Doctrine::find($request->doctrineid);

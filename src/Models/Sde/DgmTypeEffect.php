@@ -8,13 +8,11 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class DgmEffect.
- *
- * @package CryptaTech\Seat\Fitting\Models\Sde
  */
 class DgmTypeEffect extends Model
 {
-    use IsReadOnly;
     use HasCompositePrimaryKey;
+    use IsReadOnly;
 
     /**
      * @var bool

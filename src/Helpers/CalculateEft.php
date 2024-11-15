@@ -123,8 +123,9 @@ trait CalculateEft
         $attributeids = array_merge(array_keys(self::REQ_SKILLS_ATTR_LEVELS), array_values(self::REQ_SKILLS_ATTR_LEVELS));
 
         foreach ($typeIDs as $type) {
-            if (gettype($type) == 'array')
+            if (gettype($type) == 'array') {
                 $type = $type['typeID'];
+            }
             $res = DgmTypeAttribute::where('typeid', $type)->wherein('attributeID', $attributeids)->get();
 
             if (count($res) == 0) {

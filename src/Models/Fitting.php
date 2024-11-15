@@ -29,23 +29,30 @@ use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class Fitting.
- *
- * @package CryptaTech\Seat\Fitting\Models
  */
 class Fitting extends Model
 {
-
     // Index of where the slots start
     const SLOT_LOW = 11;
+
     const SLOT_MEDIUM = 19;
+
     const SLOT_HIGH = 27;
+
     const SLOT_RIG = 92;
+
     const SLOT_SUBSYSTEM = 125;
+
     const INDEX_SLOT_MAX = 7;
+
     const BAY_DRONE = 87;
+
     const BAY_FIGHTER = 158;
+
     const BAY_CARGO = 5;
+
     const IMPLANT = 89;
+
     const SKILL = 7;
 
     public $timestamps = true;
@@ -105,7 +112,7 @@ class Fitting extends Model
     public function getHighSlotsAttribute()
     {
         return $this->fitItems->filter(function ($value) {
-            return (Fitting::SLOT_HIGH <= $value->flag) && ($value->flag <= Fitting::SLOT_HIGH + Fitting::INDEX_SLOT_MAX);
+            return ($value->flag >= Fitting::SLOT_HIGH) && ($value->flag <= Fitting::SLOT_HIGH + Fitting::INDEX_SLOT_MAX);
         });
     }
 
@@ -115,7 +122,7 @@ class Fitting extends Model
     public function getMediumSlotsAttribute()
     {
         return $this->fitItems->filter(function ($value) {
-            return (Fitting::SLOT_MEDIUM <= $value->flag) && ($value->flag <= Fitting::SLOT_MEDIUM + Fitting::INDEX_SLOT_MAX);
+            return ($value->flag >= Fitting::SLOT_MEDIUM) && ($value->flag <= Fitting::SLOT_MEDIUM + Fitting::INDEX_SLOT_MAX);
         });
     }
 
@@ -125,7 +132,7 @@ class Fitting extends Model
     public function getLowSlotsAttribute()
     {
         return $this->fitItems->filter(function ($value) {
-            return (Fitting::SLOT_LOW <= $value->flag) && ($value->flag <= Fitting::SLOT_LOW + Fitting::INDEX_SLOT_MAX);
+            return ($value->flag >= Fitting::SLOT_LOW) && ($value->flag <= Fitting::SLOT_LOW + Fitting::INDEX_SLOT_MAX);
         });
     }
 
@@ -135,7 +142,7 @@ class Fitting extends Model
     public function getRigSlotsAttribute()
     {
         return $this->fitItems->filter(function ($value) {
-            return (Fitting::SLOT_RIG <= $value->flag) && ($value->flag <= Fitting::SLOT_RIG + Fitting::INDEX_SLOT_MAX);
+            return ($value->flag >= Fitting::SLOT_RIG) && ($value->flag <= Fitting::SLOT_RIG + Fitting::INDEX_SLOT_MAX);
         });
     }
 
@@ -145,7 +152,7 @@ class Fitting extends Model
     public function getSubSystemsAttribute()
     {
         return $this->fitItems->filter(function ($value) {
-            return (Fitting::SLOT_SUBSYSTEM <= $value->flag) && ($value->flag <= Fitting::SLOT_SUBSYSTEM + Fitting::INDEX_SLOT_MAX);
+            return ($value->flag >= Fitting::SLOT_SUBSYSTEM) && ($value->flag <= Fitting::SLOT_SUBSYSTEM + Fitting::INDEX_SLOT_MAX);
         });
     }
 
@@ -198,61 +205,58 @@ class Fitting extends Model
      */
     public function toEve()
     {
-        return sprintf('[%s, %s]', $this->ship->typeName, $this->name) . PHP_EOL .
+        return sprintf('[%s, %s]', $this->ship->typeName, $this->name).PHP_EOL.
 
             $this->low_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->medium_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->high_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->sub_systems->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->rig_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->drones_bay->map(function ($slot) {
                 return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->cargo->map(function ($slot) {
                 return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL .
+            PHP_EOL.PHP_EOL.
 
             $this->fighters_bay->map(function ($slot) {
                 return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL).
 
-            PHP_EOL . PHP_EOL;
+            PHP_EOL.PHP_EOL;
     }
 
-    /**
-     * @return Fitting
-     */
-    public static function createFromEve(string $eft, int $existing_id = null): Fitting
+    public static function createFromEve(string $eft, ?int $existing_id = null): Fitting
     {
 
         // Normalise all the line endings to \n
@@ -285,13 +289,17 @@ class Fitting extends Model
 
         $index = 0;
         foreach ($data as $line) {
-            if (empty($line)) continue;
+            if (empty($line)) {
+                continue;
+            }
 
             //Split away to makek sure we only have the main item first.
             $mod = explode(',', $line);
             $modu = explode(' x', $mod[0]);
             $module = InvType::where('typeName', $modu[0])->first();
-            if (empty($module)) continue;
+            if (empty($module)) {
+                continue;
+            }
 
             // Here is where we update our state machine to the next state if required.
             $solved = false;

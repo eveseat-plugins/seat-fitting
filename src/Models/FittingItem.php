@@ -30,8 +30,6 @@ use Seat\Services\Contracts\IPriceable;
 
 /**
  * Class FittingItem.
- *
- * @package CryptaTech\Seat\Fitting\Models
  */
 class FittingItem extends Model implements HasTypeIDWithAmount, IPriceable
 {
@@ -87,10 +85,9 @@ class FittingItem extends Model implements HasTypeIDWithAmount, IPriceable
 
     /**
      * @param  float  $price  The new price of this item stack
-     * @return void
      */
     public function setPrice(float $price): void
     {
-       $this->price = $price;
+        $this->price = $price;
     }
 }

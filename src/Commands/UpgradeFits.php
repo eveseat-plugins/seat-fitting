@@ -12,12 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Class UpgradeFits.
- *
- * @package CryptaTech\Seat\Fitting\Commands
  */
 class UpgradeFits extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -43,7 +40,7 @@ class UpgradeFits extends Command
         $oldFits = OldFitting::all();
         $c = count($oldFits);
 
-        $this->info('Found ' . $c . ' fits to process');
+        $this->info('Found '.$c.' fits to process');
 
         $bar = $this->getProgressBar($c);
         $failedUpgrades = 0;
@@ -65,8 +62,8 @@ class UpgradeFits extends Command
         $this->line('');
 
         $this->info('Fitting Migration Complete!');
-        $this->info('Success: ' . $c - $failedUpgrades);
-        $this->warn('Failure : ' . $failedUpgrades);
+        $this->info('Success: '.$c - $failedUpgrades);
+        $this->warn('Failure : '.$failedUpgrades);
 
         $this->line('');
 
@@ -74,7 +71,7 @@ class UpgradeFits extends Command
         $oldDocs = OldDoctrine::all();
         $bar = $this->getProgressBar(count($oldDocs));
 
-        foreach($oldDocs as $oldDoc){
+        foreach ($oldDocs as $oldDoc) {
             $newDoc = Doctrine::create([
                 'name' => $oldDoc->name,
             ]);
@@ -96,7 +93,6 @@ class UpgradeFits extends Command
      * Get a new progress bar to display based on the
      * amount of iterations we expect to use.
      *
-     * @param  $iterations
      * @return \Symfony\Component\Console\Helper\ProgressBar
      */
     public function getProgressBar($iterations)
