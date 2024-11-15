@@ -34,7 +34,6 @@ use Seat\Eveapi\Models\Sde\InvType;
  */
 class Fitting extends Model
 {
-
     // Index of where the slots start
     const SLOT_LOW = 11;
     const SLOT_MEDIUM = 19;
@@ -71,7 +70,6 @@ class Fitting extends Model
      */
     public function items()
     {
-
         return $this->hasMany(
             FittingItem::class,
             'fitting_id',
@@ -84,7 +82,6 @@ class Fitting extends Model
      */
     public function ship()
     {
-
         return $this->hasOne(InvType::class, 'typeID', 'ship_type_id')
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
@@ -198,55 +195,59 @@ class Fitting extends Model
      */
     public function toEve()
     {
-        return sprintf('[%s, %s]', $this->ship->typeName, $this->name) . PHP_EOL .
+        $blocks = [];
 
-            $this->low_slots->map(function ($slot) {
+        $blocks[] = sprintf('[%s, %s]', $this->ship->typeName, $this->name);
+
+        if ($this->low_slots->count() > 0) {
+            $blocks[] = $this->low_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->medium_slots->map(function ($slot) {
+        if ($this->medium_slots->count() > 0) {
+            $blocks[] = $this->medium_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->high_slots->map(function ($slot) {
+        if ($this->high_slots->count() > 0) {
+            $blocks[] = $this->high_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->sub_systems->map(function ($slot) {
+        if ($this->sub_systems->count() > 0) {
+            $blocks[] = $this->sub_systems->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->rig_slots->map(function ($slot) {
+        if ($this->rig_slots->count() > 0) {
+            $blocks[] = $this->rig_slots->map(function ($slot) {
                 return $slot->type->typeName;
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->drones_bay->map(function ($slot) {
+        if ($this->drones_bay->count() > 0) {
+            $blocks[] = $this->drones_bay->map(function ($slot) {
                 return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->cargo->map(function ($slot) {
+        if ($this->cargo->count() > 0) {
+            $blocks[] = $this->cargo->map(function ($slot) {
                 return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL .
-
-            $this->fighters_bay->map(function ($slot) {
+        if ($this->fighters_bay->count() > 0) {
+            $blocks[] = $this->fighters_bay->map(function ($slot) {
                 return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-            })->implode(PHP_EOL) .
+            })->implode(PHP_EOL);
+        }
 
-            PHP_EOL . PHP_EOL;
+        return implode(PHP_EOL . PHP_EOL, $blocks);
     }
 
     /**
@@ -254,7 +255,6 @@ class Fitting extends Model
      */
     public static function createFromEve(string $eft, int $existing_id = null): Fitting
     {
-
         // Normalise all the line endings to \n
         $eft = preg_replace('~\r\n?~', "\n", $eft);
 
@@ -287,7 +287,7 @@ class Fitting extends Model
         foreach ($data as $line) {
             if (empty($line)) continue;
 
-            //Split away to makek sure we only have the main item first.
+            // Split away to make sure we only have the main item first.
             $mod = explode(',', $line);
             $modu = explode(' x', $mod[0]);
             $module = InvType::where('typeName', $modu[0])->first();
