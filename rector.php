@@ -18,4 +18,11 @@ return RectorConfig::configure()
         SetList::PHP_83,
         LevelSetList::UP_TO_PHP_83,
     ])
-    ->withImportNames(removeUnusedImports: true);
+    ->withImportNames(removeUnusedImports: true)
+    ->withCache(
+        // ensure file system caching is used instead of in-memory
+        cacheClass: FileCacheStorage::class,
+
+        // specify a path that works locally as well as on CI job runners
+        cacheDirectory: '/tmp/rector'
+    );
