@@ -1,14 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\SetList;
 use Rector\Set\ValueObject\LevelSetList;
+use Rector\Set\ValueObject\SetList;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
-    ->withPaths([__DIR__ . '/src'])
+    ->withPaths([__DIR__.'/src'])
     ->withSets([
         LaravelLevelSetList::UP_TO_LARAVEL_100,
         LaravelSetList::LARAVEL_CODE_QUALITY,
