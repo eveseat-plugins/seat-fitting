@@ -35,15 +35,14 @@ jobs:
           extensions: json, dom, curl, libxml, mbstring
           coverage: none
  
-      - name: Install Pint and Rector
-        run: composer global require laravel/pint driftingly/rector-laravel
+      - name: Install Packages
+        run: composer update --dev
 
       - name: Rector Dry Run
-        run: rector process --dry-run --config=rector.php
+        run: vendor/bin/rector process --dry-run --config=rector.php
 
- 
       - name: Run Pint
-        run: pint
+        run: vendor/bin/pint
  
       - name: Commit linted files
         uses: stefanzweifel/git-auto-commit-action@v5
