@@ -25,9 +25,6 @@ jobs:
 
       - run: mkdir -p /tmp/rector
 
-      - name: Rector Dry Run
-        run: php vendor/bin/rector process --dry-run --config=rector.php
-
       - name: Checkout code
         uses: actions/checkout@v4
  
@@ -38,8 +35,12 @@ jobs:
           extensions: json, dom, curl, libxml, mbstring
           coverage: none
  
-      - name: Install Pint
-        run: composer global require laravel/pint
+      - name: Install Pint and Rector
+        run: composer global require laravel/pint driftingly/rector-laravel
+
+      - name: Rector Dry Run
+        run: php vendor/bin/rector process --dry-run --config=rector.php
+
  
       - name: Run Pint
         run: pint
