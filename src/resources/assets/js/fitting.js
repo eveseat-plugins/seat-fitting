@@ -96,9 +96,11 @@ function drawLevelBox(neededLevel, currentLevel, skillName, rank) {
         row = '<tr class="bg-orange">';
         pointdiff = (rank * 250 * Math.pow(5.66, (neededLevel - 1))) - (rank * 250 * Math.pow(5.66, (currentLevel - 1)));
         trainingtime = formatTime(pointdiff);
+    } else {
+        row = '<tr>';
     }
 
-    let graph = row + '<td>' + skillName + ' <small>(x' + rank + ')</small></td>';
+    let graph = '<td>' + skillName + ' <small>(x' + rank + ')</small></td>';
     graph += '<td style="width: 11em"><div style="background-color: transparent; width: 5.5em; text-align: center; height: 1.35em; letter-spacing: 2.25px;" class="pull-right">';
 
     if (currentLevel >= neededLevel) {
@@ -124,6 +126,7 @@ function drawLevelBox(neededLevel, currentLevel, skillName, rank) {
     }
 
     graph += '</div><span class="pull-right"><small>' + trainingtime + '</small> </span></td></tr>';
+    graph += '</td>';
 
-    return graph;
+    return row + graph + '</tr>';
 }
