@@ -6,7 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
             </div>
-            <form role="form" action="{{ route('fitting.saveFitting') }}" method="post">
+            <form role="form" action="{{ route('cryptafitting::saveFitting') }}" method="post">
                 <input type="hidden" id="fitSelection" name="fitSelection" value="0">
                 <div class="modal-body">
                     <p>{{trans('fitting::fitting.edit_fitting_body')}}</p>

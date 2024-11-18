@@ -1,4 +1,3 @@
-@php use Denngarr\Seat\Fitting\Helpers\FittingHelper; @endphp
 @extends('web::layouts.grids.4-4-4')
 
 @section('title', trans('fitting::fitting.page_title'))
@@ -35,7 +34,7 @@
                 @if (count($fitlist) > 0)
                     @foreach($fitlist as $fit)
                         <tr class="fitid" data-id="{{ $fit['id'] }}">
-                            <td><img src='{{FittingHelper::toFittingIcon($fit)}}'
+                            <td><img src='https://images.evetech.net/types/{{$fit['typeID']}}/icon?size=32'
                                      height='24' alt="{{trans('fitting::fitting.fitting_icon_alt')}}"/>
                             </td>
                             <td>{{ $fit['shiptype'] }}</td>
@@ -67,7 +66,7 @@
         </div>
         @if(setting("fitting.show_about_footer", true))
             <div class="card-footer text-muted">
-                {!! trans('fitting::about.maintained_by', ['route' => route('fitting.about'), 'img' => img('characters', 'portrait', 96057938, 64, ['class' => 'img-circle eve-icon small-icon'])]) !!}
+                {!! trans('fitting::about.maintained_by', ['route' => route('cryptafitting::about'), 'img' => img('characters', 'portrait', 96057938, 64, ['class' => 'img-circle eve-icon small-icon'])]) !!}
                 <span class="float-right snoopy" style="color: #fa3333;"><i class="fas fa-signal"></i></span>
             </div>
         @endif
