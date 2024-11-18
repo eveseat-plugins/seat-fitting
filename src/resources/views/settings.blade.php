@@ -29,6 +29,8 @@
             </form>
 
         </div>
+
+        @include('fitting::includes.maintainer')
     </div>
 @endsection
 

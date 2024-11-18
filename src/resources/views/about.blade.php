@@ -14,6 +14,7 @@
                 {{trans('fitting::about.functionality_body')}}
             </p>
         </div>
+        @include('fitting::includes.maintainer')
     </div>
 @stop
 
@@ -50,16 +51,8 @@
                 <p>{!! trans('fitting::about.thanks_footer') !!}</p>
             </div>
         </div>
-        <div class="card-footer text-muted">
-            {!! trans('fitting::about.maintained_by', ['route' => route('cryptafitting::about'), 'img' => img('characters', 'portrait', 96057938, 64, ['class' => 'img-circle eve-icon small-icon'])]) !!}
-            <span class="float-right snoopy" style="color: #fa3333;"><i class="fas fa-signal"></i></span>
-        </div>
+        @include('fitting::includes.maintainer')
     </div>
-
-    <div class="card-footer text-muted">
-        Plugin maintained by <a href="{{ route('cryptafitting::about') }}"> {!! img('characters', 'portrait', 96057938, 64, ['class' => 'img-circle eve-icon small-icon']) !!} Crypta Electrica</a>. <span class="float-right snoopy" style="color: #fa3333;"><i class="fas fa-signal"></i></span>
-    </div>
-
 
 @stop
 @section('right')
@@ -72,6 +65,8 @@
             <legend>{{trans('fitting::about.info_body_legend')}}</legend>
             <p>{!! trans('fitting::about.info_body_text') !!}</p>
         </div>
+
+        @include('fitting::includes.maintainer')
     </div>
 
 @stop
