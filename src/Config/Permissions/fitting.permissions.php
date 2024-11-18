@@ -9,26 +9,26 @@ return [
     'view' => [
         'label' => 'fitting::config.permission_view_fitting_label',
         'description' => 'fitting::config.permission_view_fitting_desc',
-        'division' => 'military'
+        'division' => 'military',
     ],
     'create' => [
         'label' => 'fitting::config.permission_create_fitting_label',
         'description' => 'fitting::config.permission_create_fitting_desc',
-        'division' => 'military'
+        'division' => 'military',
     ],
     'doctrineview' => [
         'label' => 'fitting::config.permission_view_doctrine_label',
         'description' => 'fitting::config.permission_view_doctrine_desc',
-        'division' => 'military'
+        'division' => 'military',
     ],
     'reportview' => [
         'label' => 'fitting::config.permission_view_reports_label',
         'description' => 'fitting::config.permission_view_reports_desc',
-        'division' => 'military'
+        'division' => 'military',
     ],
     'settings' => [
         'label' => 'fitting::config.permission_settings_label',
         'description' => 'fitting::config.permission_settings_desc',
-        'division' => 'military'
+        'division' => 'military',
     ],
 ];

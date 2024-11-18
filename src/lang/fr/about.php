@@ -20,5 +20,5 @@ return [
     'info_body_legend' => 'Bugs et demande de fonctionnalités',
     'info_body_text' => 'Si vous rencontrez un bug ou avez une suggestion, contactez Crypta-Eve sur <a
                         href="https://eveseat.github.io/docs/about/contact/">SeAT-Discord</a> ou soumettre un <a
-                        href="https://github.com/dysath/seat-fitting/issues/new">demande sur Github</a>'
+                        href="https://github.com/dysath/seat-fitting/issues/new">demande sur Github</a>',
 ];

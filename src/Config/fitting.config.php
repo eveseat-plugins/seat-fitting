@@ -6,6 +6,6 @@
 
 return [
     'eve' => [
-        'imageServerUrl' => 'https://images.evetech.net/types/'
-    ]
+        'imageServerUrl' => 'https://images.evetech.net/types/',
+    ],
 ];

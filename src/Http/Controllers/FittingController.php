@@ -235,11 +235,11 @@ class FittingController extends Controller implements CalculateConstants
             return $v->getPrice();
         });
 
-        $volume = $items->sum(function (FittingItem $item){
+        $volume = $items->sum(function (FittingItem $item) {
             return $item->type->volume;
         });
 
-        return response()->json(['total' => $total, 'ship' => $ship->getPrice(), 'volume'=>$volume]);
+        return response()->json(['total' => $total, 'ship' => $ship->getPrice(), 'volume' => $volume]);
     }
 
     public function getFittingById($id)

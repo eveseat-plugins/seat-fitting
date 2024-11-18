@@ -43,5 +43,5 @@ return [
     'skill_name_header' => 'Skill Name',
     'skill_level_header' => 'Level',
 
-    'no_character_selected' => 'No character selected !'
+    'no_character_selected' => 'No character selected !',
 ];

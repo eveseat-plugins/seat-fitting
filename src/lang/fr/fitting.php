@@ -43,5 +43,5 @@ return [
     'skill_name_header' => 'Nom de compétence',
     'skill_level_header' => 'Niveau',
 
-    'no_character_selected' => 'Aucun personnage sélectionné !'
+    'no_character_selected' => 'Aucun personnage sélectionné !',
 ];

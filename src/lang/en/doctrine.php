@@ -39,6 +39,6 @@ return [
 
     'report_character_header' => 'Character',
     'report_hull_header' => 'HULL / FIT Totals',
-    'report_fit_badge' => 'FIT'
+    'report_fit_badge' => 'FIT',
 
 ];

@@ -44,7 +44,7 @@ class FittingHelper
     {
         $result = [
             'total' => 0,
-            'volume' => 0
+            'volume' => 0,
         ];
 
         foreach ($items as $item) {
@@ -59,6 +59,6 @@ class FittingHelper
     {
         $typeId = $fit['typeID'];
 
-        return config('fitting.config.eve.imageServerUrl') . $typeId . "/icon?size=32";
+        return config('fitting.config.eve.imageServerUrl').$typeId.'/icon?size=32';
     }
 }

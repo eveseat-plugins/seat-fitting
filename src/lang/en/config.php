@@ -23,4 +23,3 @@ return [
     'permission_settings_label' => 'Settings',
     'permission_settings_desc' => 'Ability to configure the plugin',
 ];
-
