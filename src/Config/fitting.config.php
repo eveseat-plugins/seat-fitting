@@ -5,7 +5,4 @@
  */
 
 return [
-    'eve' => [
-        'imageServerUrl' => 'https://images.evetech.net/types/',
-    ],
 ];
