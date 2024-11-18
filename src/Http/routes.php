@@ -96,6 +96,11 @@ Route::group([
             'uses' => 'FittingController@getDoctrineView',
             'middleware' => 'can:fitting.doctrineview',
         ]);
+        Route::get('/doctrine/{doctrine_id}', [
+            'as' => 'fitting.doctrineviewdetails',
+            'uses' => 'FittingController@getDoctrineView',
+            'middleware' => 'can:fitting.doctrineview'
+        ]);
         Route::get('/fittinglist', [
             'as' => 'cryptafitting::fitlist',
             'uses' => 'FittingController@getFittingList',
