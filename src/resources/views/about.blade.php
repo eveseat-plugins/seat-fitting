@@ -3,10 +3,6 @@
 @section('title', trans('fitting::about.page_title'))
 @section('page_header', trans('fitting::about.page_title'))
 
-@push('head')
-    <link rel="stylesheet" href="{{ asset('web/css/fitting.css') }}"/>
-@endpush
-
 @section('left')
 
     <div class="card card-default">

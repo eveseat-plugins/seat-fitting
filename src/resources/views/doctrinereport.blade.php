@@ -3,10 +3,6 @@
 @section('title', trans('fitting::doctrine.report_page_title'))
 @section('page_header', trans('fitting::doctrine.report_page_title'))
 
-@push('head')
-    <link rel="stylesheet" href="{{ asset('web/css/fitting.css') }}"/>
-@endpush
-
 
 @section('full')
     <div class="card card-primary card-solid">

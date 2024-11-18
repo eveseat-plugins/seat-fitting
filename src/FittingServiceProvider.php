@@ -33,6 +33,11 @@ class FittingServiceProvider extends AbstractSeatPlugin
         ],
             ["config", "seat"],
         );
+
+        $this->publishes([
+            __DIR__ . '/resources/assets/css' => public_path('web/css'),
+            __DIR__ . '/resources/assets/js' => public_path('web/js'),
+        ]);
     }
 
     /**

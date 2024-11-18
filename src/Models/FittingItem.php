@@ -30,6 +30,9 @@ use Seat\Services\Contracts\IPriceable;
 
 /**
  * Class FittingItem.
+ *
+ * @property InvType $type
+ * @property InvFlag $invFlag
  */
 class FittingItem extends Model implements HasTypeIDWithAmount, IPriceable
 {

@@ -3,10 +3,6 @@
 @section('title', trans('fitting::fitting.page_title'))
 @section('page_header', trans('fitting::fitting.page_title'))
 
-@push('head')
-    <link rel="stylesheet" href="{{ asset('web/css/fitting.css') }}"/>
-@endpush
-
 @section('left')
     <div class="card card-primary card-solid">
         <div class="card-header">
@@ -105,10 +101,12 @@
 
             }).done(function (result) {
                 if (result) {
+                    console.log(result, typeof result)
                     let total = result.total.toLocaleString();
                     let volume = result.volume.toLocaleString();
+                    let ship = result.ship.toLocaleString();
 
-                    $('#current_appraisal').html(total + " (ISK)" + " - " + volume + "m3");
+                    $('#current_appraisal').html(`${ship}/${total} (ISK) - ${volume} m3`);
                 }
             });
         });
