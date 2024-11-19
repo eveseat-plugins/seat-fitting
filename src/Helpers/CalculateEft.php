@@ -27,7 +27,7 @@ trait CalculateEft
             return $v->type_id;
         });
         $types->push($fitting->ship->typeID);
-        $types= $types->unique();
+        $types = $types->unique();
 
         $this->getReqSkillsByTypeIDs($types);
         // $this->modifyRequiredSkills($items['fit_items']); // Disabled for now
