@@ -26,7 +26,7 @@
                 <select id="doctrineSpinner" class="form-control mr-3">
                     <option value="0">Choose Doctrine....</option>
                     @foreach ($doctrine_list as $doctrine)
-                    <option value="{{ $doctrine['id'] }}">{{ $doctrine['name'] }}</option>
+                    <option value="{{ $doctrine['id'] }}" @if($doctrine_id == $doctrine['id']) selected @endif>{{ $doctrine['name'] }}</option>
                     @endforeach
                 </select>
                 <div class="input-group-btn">
@@ -335,25 +335,24 @@
         }
     });
 
-    $('#doctrineSpinner').change(function() {
-        id = $('#doctrineSpinner').find(":selected").val();
-
+    function changeDoctrine(id) {
         if (id > 0) {
             $('button#editDoctrine').prop('disabled', false);
             $('button#deleteDoctrine').prop('disabled', false);
 
             $.ajax({
-                headers: function() {},
+                headers: function () {
+                },
                 url: "/fitting/getdoctrinebyid/" + id,
                 type: "GET",
                 dataType: 'json',
                 timeout: 10000
-            }).done(function(result) {
+            }).done(function (result) {
                 if (result) {
                     fitListTable.destroy();
                     $('#fitlist').find("tbody").empty();
                     for (var fitting in result) {
-                        row = "<tr><td><img src='https://image.eveonline.com/Type/" + result[fitting].shipImg + "_32.png' height='24' /></td>";
+                        row = "<tr><td><img src='https://images.evetech.net/types/" + result[fitting].shipImg + "/icon?size=32' height='24' /></td>";
                         row = row + "<td>" + result[fitting].shipType + "</td>";
                         row = row + "<td>" + result[fitting].name + "</td>";
                         row = row + "<td><button type='button' id='viewfit' class='btn btn-xs btn-success pull-right' data-id='" + result[fitting].id + "' data-toggle='tooltip' data-placement='top' title='View Fitting'>";
@@ -367,6 +366,17 @@
             $('button#editDoctrine').prop('disabled', true);
             $('button#deleteDoctrine').prop('disabled', true);
         }
+    }
+
+    let initialId = $('#doctrineSpinner').val();
+
+    if (initialId) {
+        changeDoctrine(initialId);
+    }
+
+    $('#doctrineSpinner').change(function () {
+        const id = $('#doctrineSpinner').find(":selected").val();
+        changeDoctrine(id);
     });
 
 
