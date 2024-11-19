@@ -25,7 +25,10 @@ trait CalculateEft
         $items = collect($fitting->fitItems->all());
         $types = $items->map(function (FittingItem $v, $k) {
             return $v->type_id;
-        })->unique();
+        });
+        $types->push($fitting->ship->typeID);
+        $types= $types->unique();
+
         $this->getReqSkillsByTypeIDs($types);
         // $this->modifyRequiredSkills($items['fit_items']); // Disabled for now
 
