@@ -5,6 +5,12 @@ function fillFittingWindow(result) {
         $('#showeft').val(result.eft);
         $('#eftexport').show();
 
+        const exportLinks = $('#exportLinks')
+        exportLinks.show().empty();
+        for(const link of result.exportLinks){
+            exportLinks.append(`<a href="${link.url}" class="list-group-item list-group-item-action">${link.name}</a>`)
+        }
+
         const eveTechUrl = 'https://images.evetech.net/types';
 
         for (const slotType in result) {
