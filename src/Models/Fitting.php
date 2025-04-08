@@ -293,7 +293,7 @@ class Fitting extends Model
                 continue;
             }
 
-            //Split away to makek sure we only have the main item first.
+            // Split away to makek sure we only have the main item first.
             $mod = explode(',', $line);
             $modu = explode(' x', $mod[0]);
             $module = InvType::where('typeName', $modu[0])->first();
