@@ -1,5 +1,5 @@
 {
-    "name": "cryptatech/seat-fitting",
+    "name": "straylight-forever/seat-fitting",
     "description": "Module to check fittings per character",
     "type": "seat-plugin",
     "license": "GPL-2.0-only",
