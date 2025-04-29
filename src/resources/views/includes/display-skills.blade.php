@@ -1,5 +1,5 @@
 <div class="card card-primary card-solid" id="skills-box">
-    <div class="card-header form-group"><h3 class="box-title"
+    <div class="card-header form-group"><h3 class="card-title"
                                             id="skill-title">{{trans('fitting::fitting.required_skills_title')}}</h3>
     </div>
     <div class="card-body">
