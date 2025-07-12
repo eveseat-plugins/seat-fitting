@@ -467,11 +467,11 @@ class FittingController extends Controller implements CalculateConstants
         $doctrine_id = $request->doctrine;
 
         $characters = CharacterInfo::with('skills')->whereHas('affiliation', function ($affiliation) use ($corporation_ids, $alliance_ids) {
-            if(count($alliance_ids)>0) {
+            if (count($alliance_ids) > 0) {
                 $affiliation
                     ->whereIn('alliance_id', $alliance_ids);
             }
-            if(count($corporation_ids)>0) {
+            if (count($corporation_ids) > 0) {
                 $affiliation
                     ->whereIn('corporation_id', $corporation_ids);
             }
