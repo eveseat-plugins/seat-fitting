@@ -126,7 +126,7 @@ Route::group([
             'uses' => 'FittingController@viewDoctrineReport',
             'middleware' => 'can:fitting.reportview',
         ]);
-        Route::get('/runReport/{allianceid}/{corpid}/{doctrineid}', [
+        Route::post('/runReport', [
             'as' => 'cryptafitting::runreport',
             'uses' => 'FittingController@runReport',
             'middleware' => 'can:fitting.reportview',

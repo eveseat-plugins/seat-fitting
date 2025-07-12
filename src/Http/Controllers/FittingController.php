@@ -452,21 +452,30 @@ class FittingController extends Controller implements CalculateConstants
         return view('fitting::doctrinereport', compact('doctrines', 'corps', 'alliances'));
     }
 
-    public function runReport($alliance_id, $corp_id, $doctrine_id)
+    public function runReport(Request $request)
     {
-        $characters = collect();
+        $request->validate([
+            'alliances' => 'present|array',
+            'alliances.*' => 'integer',
+            'corporations' => 'present|array',
+            'corporations.*' => 'integer',
+            'doctrine' => 'required|integer',
+        ]);
 
-        if ($alliance_id !== '0') {
+        $alliance_ids = $request->alliances;
+        $corporation_ids = $request->corporations;
+        $doctrine_id = $request->doctrine;
 
-            $chars = CharacterInfo::with('skills')->whereHas('affiliation', function ($affiliation) use ($alliance_id) {
-                $affiliation->where('alliance_id', $alliance_id);
-            })->get();
-            $characters = $characters->concat($chars);
-        } else {
-            $characters = CharacterInfo::with('skills')->whereHas('affiliation', function ($affiliation) use ($corp_id) {
-                $affiliation->where('corporation_id', $corp_id);
-            })->get();
-        }
+        $characters = CharacterInfo::with('skills')->whereHas('affiliation', function ($affiliation) use ($corporation_ids, $alliance_ids) {
+            if(count($alliance_ids)>0) {
+                $affiliation
+                    ->whereIn('alliance_id', $alliance_ids);
+            }
+            if(count($corporation_ids)>0) {
+                $affiliation
+                    ->whereIn('corporation_id', $corporation_ids);
+            }
+        })->get();
 
         $doctrine = Doctrine::where('id', $doctrine_id)->first();
         $fittings = $doctrine->fittings;

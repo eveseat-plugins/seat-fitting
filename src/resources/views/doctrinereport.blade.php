@@ -14,8 +14,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="form-group">
                         <label for="alliances">{{trans('fitting::doctrine.report_alliance_label')}}:</label>
-                        <select id="alliances" class="form-control">
-                            <option value="0">---</option>
+                        <select id="alliances" class="form-control" multiple>
                             @foreach ($alliances as $alliance)
                                 <option value="{{ $alliance->alliance_id }}">{{ $alliance->name }}
                                     [{{ $alliance->ticker }}]
@@ -28,8 +27,7 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="form-group">
                         <label for="corporations">{{trans('fitting::doctrine.report_corporation_label')}}:</label>
-                        <select id="corporations" class="form-control">
-                            <option value="0">---</option>
+                        <select id="corporations" class="form-control" multiple>
                             @foreach ($corps as $corp)
                                 <option value="{{ $corp->corporation_id }}">{{ $corp->name }}</option>
                             @endforeach
@@ -85,16 +83,24 @@
         $(document).ready(function () {
             $('#reportbox').hide();
 
-            $('#alliances').select2({sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),});
-            $('#corporations').select2({sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),});
+            $('#alliances').select2({
+                sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+                multiple: true,
+                placeholder: "Select alliances"
+            });
+            $('#corporations').select2({
+                sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+                multiple: true,
+                placeholder: "Select corporations"
+            });
             $('#doctrines').select2({sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),});
 
         });
 
         button.on('click', function () {
-            const allianceid = $('#alliances').find(":selected").val();
-            const corpid = $('#corporations').find(":selected").val();
-            const doctrineid = $('#doctrines').find(":selected").val();
+            const allianceids = $('#alliances').select2('data').map((e)=>parseInt(e.id));
+            const corpids = $('#corporations').select2('data').map((e)=>parseInt(e.id));
+            const doctrineid = parseInt($('#doctrines').find(":selected").val());
 
             button.prop("disabled", true);
             button.html(
@@ -121,12 +127,19 @@
             report.find("thead, tbody").empty();
 
             $.ajax({
-                headers: function () {
+                headers: {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
                 },
-                url: "/fitting/runReport/" + allianceid + "/" + corpid + "/" + doctrineid,
-                type: "GET",
-                datatype: 'json',
-                timeout: 60000
+                url: "/fitting/runReport",
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    alliances: allianceids,
+                    corporations: corpids,
+                    doctrine: doctrineid,
+                }),
+                timeout: 60000,
             }).done(function (result) {
 
                 try {
