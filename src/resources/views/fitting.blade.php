@@ -17,13 +17,33 @@
             @endcan
         </div>
         <div class="card-body px-2">
-            <table id='fitlist' class="table table-hover" style="vertical-align: top">
+            <!-- Search Filters -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-rocket"></i></span>
+                        </div>
+                        <input type="text" id="searchShip" class="form-control" placeholder="Search by ship type...">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                        </div>
+                        <input type="text" id="searchFitName" class="form-control" placeholder="Search by fit name...">
+                    </div>
+                </div>
+            </div>
+            
+            <table id='fitlist' class="table table-hover table-sm" style="vertical-align: top; width: 100%;">
                 <thead>
                 <tr>
-                    <th></th>
+                    <th style="width: 40px;"></th>
                     <th>{{trans('fitting::fitting.col_ship_type')}}</th>
                     <th>{{trans('fitting::fitting.col_fit_name')}}</th>
-                    <th class="pull-right">{{trans('fitting::fitting.col_options')}}</th>
+                    <th class="text-right" style="width: 100px;">{{trans('fitting::fitting.col_options')}}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -35,7 +55,7 @@
                             </td>
                             <td>{{ $fit['shiptype'] }}</td>
                             <td>{{ $fit['fitname'] }}</td>
-                            <td class="no-hover pull-right" style="min-width:80px">
+                            <td class="no-hover text-right" style="min-width:80px">
                                 <button type="button" id="viewfit" class="btn btn-xs btn-success"
                                         data-id="{{ $fit['id'] }}" data-toggle="tooltip" data-placement="top"
                                         title="{{trans('fitting::fitting.view_fitting_tooltip')}}">
@@ -81,47 +101,94 @@
     <script type="application/javascript">
         $('#exportLinks').hide();
 
-        $('#fitlist')
+        // Initialize DataTable with search functionality
+        var fittingTable = $('#fitlist').DataTable({
+            "paging": true,
+            "pageLength": 25,
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "order": [[1, "asc"]], // Sort by ship type by default
+            "columnDefs": [
+                {
+                    "targets": 0, // Icon column
+                    "orderable": false,
+                    "searchable": false
+                },
+                {
+                    "targets": 3, // Options column
+                    "orderable": false,
+                    "searchable": false
+                }
+            ],
+            "language": {
+                "search": "Search all:",
+                "lengthMenu": "Show _MENU_ fittings",
+                "info": "Showing _START_ to _END_ of _TOTAL_ fittings",
+                "infoEmpty": "No fittings available",
+                "infoFiltered": "(filtered from _MAX_ total fittings)",
+                "zeroRecords": "No matching fittings found",
+                "emptyTable": "No fittings available"
+            },
+            "dom": '<"row"<"col-sm-6"l><"col-sm-6"f>>rt<"row"<"col-sm-6"i><"col-sm-6"p>>'
+        });
+
+        // Custom search for ship type column (column index 1)
+        $('#searchShip').on('keyup change', function() {
+            fittingTable.column(1).search(this.value).draw();
+        });
+
+        // Custom search for fit name column (column index 2)
+        $('#searchFitName').on('keyup change', function() {
+            fittingTable.column(2).search(this.value).draw();
+        });
+
+        // Click handlers for fitting actions
+        $('#fitlist tbody')
             .on('click', '#deletefit', function () {
                 $('#fitConfirmModal').modal('show');
-                $('#fitSelection').val($(this).data('id'));
-            }).on('click', '#viewfit', function () {
-            $.ajax({
-                headers: function () {
-                },
-                url: "/fitting/getfittingcostbyid/" + $(this).data('id'),
-                type: "GET",
-                dataType: 'json',
-                timeout: 10000
-
-            }).done(function (result) {
-                if (result) {
-                    console.log(result, typeof result)
-                    let total = result.total.toLocaleString();
-                    let volume = result.volume.toLocaleString();
-                    let ship = result.ship.toLocaleString();
-
-                    $('#current_appraisal').html(`${ship}/${total} (ISK) - ${volume} m3`);
-                }
+                $('#fitSelection').val($(this).closest('tr').data('id'));
+            })
+            .on('click', '#viewfit', function () {
+                var fitId = $(this).data('id');
+                $.ajax({
+                    headers: function () {},
+                    url: "/fitting/getfittingcostbyid/" + fitId,
+                    type: "GET",
+                    dataType: 'json',
+                    timeout: 10000
+                }).done(function (result) {
+                    if (result && !result.error) {
+                        let total = result.total.toLocaleString();
+                        let volume = result.volume.toLocaleString();
+                        let ship = result.ship.toLocaleString();
+                        $('#current_appraisal').html(`${ship}/${total} (ISK) - ${volume} m3`);
+                    } else if (result && result.error) {
+                        $('#current_appraisal').html(`<span class="text-warning">${result.error}</span>`);
+                    }
+                }).fail(function(xhr, status, error) {
+                    console.error('Price fetch failed:', error);
+                    $('#current_appraisal').html('<span class="text-danger">Failed to fetch pricing</span>');
+                });
             });
-        });
 
         $('#deleteConfirm').on('click', function () {
             const id = $('#fitSelection').val();
-            $('#fitlist .fitid[data-id="' + id + '"]').remove();
-
+            
             $.ajax({
-                headers: function () {
-                },
+                headers: function () {},
                 url: "/fitting/delfittingbyid/" + id,
                 type: "GET",
                 datatype: 'json',
                 timeout: 10000
             }).done(function (result) {
-                $('#fitlist .fitid[data-id="' + id + '"]').remove();
+                // Remove the row from DataTable
+                fittingTable.row($('#fitlist .fitid[data-id="' + id + '"]')).remove().draw();
             }).fail(function (xmlHttpRequest, textStatus, errorThrown) {
+                console.error('Delete failed:', errorThrown);
             });
         });
     </script>
 @endpush
-
