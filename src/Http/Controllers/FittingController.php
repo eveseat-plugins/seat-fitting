@@ -158,7 +158,7 @@ class FittingController extends Controller implements CalculateConstants
                 $rank = DgmTypeAttribute::where('typeID', $skill->skill_id)->where('attributeID', '275')->first();
 
                 $skillsToons['characters'][$index]['skill'][$skill->skill_id]['level'] = $skill->trained_skill_level;
-                $skillsToons['characters'][$index]['skill'][$skill->skill_id]['rank'] = $rank->valueFloat;
+                $skillsToons['characters'][$index]['skill'][$skill->skill_id]['rank'] = $rank ? $rank->valueFloat : 1;
             }
 
             // Fill in missing skills so Javascript doesn't barf and you have the correct rank
@@ -171,7 +171,7 @@ class FittingController extends Controller implements CalculateConstants
                 $rank = DgmTypeAttribute::where('typeID', $skill['typeId'])->where('attributeID', '275')->first();
 
                 $skillsToons['characters'][$index]['skill'][$skill['typeId']]['level'] = 0;
-                $skillsToons['characters'][$index]['skill'][$skill['typeId']]['rank'] = $rank->valueFloat;
+                $skillsToons['characters'][$index]['skill'][$skill['typeId']]['rank'] = $rank ? $rank->valueFloat : 1;
             }
         }
 
@@ -216,6 +216,17 @@ class FittingController extends Controller implements CalculateConstants
     {
         $fit = Fitting::find($id);
         $provider = setting('cryptatech_seat_fitting_price_provider', true);
+        
+        // Check if price provider is configured
+        if ($provider === null) {
+            return response()->json([
+                'error' => 'Price provider not configured. Please configure it in Fitting Settings.',
+                'total' => 0,
+                'ship' => 0,
+                'volume' => 0
+            ], 400);
+        }
+        
         $items = $fit->fitItems;
         $ship = new FittingItem;
         $ship->type_id = $fit->ship_type_id;
